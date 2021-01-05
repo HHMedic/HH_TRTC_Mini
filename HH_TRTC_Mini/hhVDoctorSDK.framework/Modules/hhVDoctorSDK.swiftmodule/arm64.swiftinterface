@@ -1,0 +1,2375 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.1 (swiftlang-1100.0.270.13 clang-1100.0.33.7)
+// swift-module-flags: -target arm64-apple-ios9.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name hhVDoctorSDK
+import AVFoundation
+import AdSupport
+import CoreGraphics
+import CoreLocation
+import CoreTelephony
+import Darwin
+import Dispatch
+import Foundation
+import ImSDK
+import LocalAuthentication
+import MobileCoreServices
+import ObjectiveC
+import Photos
+import Security
+import Swift
+import SystemConfiguration
+import TXLiteAVSDK_TRTC
+import UIKit
+import WebKit
+@_exported import hhVDoctorSDK
+public protocol AEAD {
+  static var kLen: Swift.Int { get }
+  static var ivRange: Swift.Range<Swift.Int> { get }
+}
+extension AES {
+  convenience public init(key: Swift.String, iv: Swift.String, padding: hhVDoctorSDK.Padding = .pkcs7) throws
+}
+extension AES : hhVDoctorSDK.Cryptors {
+  final public func makeEncryptor() throws -> hhVDoctorSDK.AES.Encryptor
+  final public func makeDecryptor() throws -> hhVDoctorSDK.AES.Decryptor
+  public typealias EncryptorType = hhVDoctorSDK.AES.Encryptor
+  public typealias DecryptorType = hhVDoctorSDK.AES.Decryptor
+}
+extension AES {
+  public struct Encryptor : hhVDoctorSDK.Updatable {
+    mutating public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
+  }
+}
+extension AES {
+  public struct Decryptor : hhVDoctorSDK.RandomAccessCryptor {
+    mutating public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
+    @discardableResult
+    mutating public func seek(to position: Swift.Int) -> Swift.Bool
+  }
+}
+final public class AES {
+  public enum Error : Swift.Error {
+    case dataPaddingRequired
+    case invalidData
+    public static func == (a: hhVDoctorSDK.AES.Error, b: hhVDoctorSDK.AES.Error) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public enum Variant : Swift.Int {
+    case aes128, aes192, aes256
+    public typealias RawValue = Swift.Int
+    public init?(rawValue: Swift.Int)
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  public static let blockSize: Swift.Int
+  final public let keySize: Swift.Int
+  final public var variant: hhVDoctorSDK.AES.Variant {
+    get
+  }
+  public init(key: Swift.Array<Swift.UInt8>, blockMode: hhVDoctorSDK.BlockMode, padding: hhVDoctorSDK.Padding = .pkcs7) throws
+  @objc deinit
+}
+extension AES : hhVDoctorSDK.Cipher {
+  final public func encrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  final public func decrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+}
+extension Array {
+  public init(reserveCapacity: Swift.Int)
+}
+extension Array where Element == Swift.UInt8 {
+  public init(hex: Swift.String)
+  public func toHexString() -> Swift.String
+}
+extension Array where Element == Swift.UInt8 {
+  @available(*, deprecated)
+  public func chunks(size chunksize: Swift.Int) -> Swift.Array<Swift.Array<Element>>
+  public func md5() -> [Element]
+  public func sha1() -> [Element]
+  public func sha224() -> [Element]
+  public func sha256() -> [Element]
+  public func sha384() -> [Element]
+  public func sha512() -> [Element]
+  public func sha2(_ variant: hhVDoctorSDK.SHA2.Variant) -> [Element]
+  public func sha3(_ variant: hhVDoctorSDK.SHA3.Variant) -> [Element]
+  public func crc32(seed: Swift.UInt32? = nil, reflect: Swift.Bool = true) -> Swift.UInt32
+  public func crc16(seed: Swift.UInt16? = nil) -> Swift.UInt16
+  public func encrypt(cipher: hhVDoctorSDK.Cipher) throws -> [Element]
+  public func decrypt(cipher: hhVDoctorSDK.Cipher) throws -> [Element]
+  public func authenticate<A>(with authenticator: A) throws -> [Element] where A : hhVDoctorSDK.Authenticator
+}
+extension Array where Element == Swift.UInt8 {
+  public func toBase64() -> Swift.String?
+  public init(base64: Swift.String)
+}
+public protocol Authenticator {
+  func authenticate(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+}
+public enum Bit : Swift.Int {
+  case zero
+  case one
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public enum BlockMode {
+  case ECB, CBC(iv: Swift.Array<Swift.UInt8>), PCBC(iv: Swift.Array<Swift.UInt8>), CFB(iv: Swift.Array<Swift.UInt8>), OFB(iv: Swift.Array<Swift.UInt8>), CTR(iv: Swift.Array<Swift.UInt8>)
+  public enum Error : Swift.Error {
+    case invalidKeyOrInitializationVector
+    case invalidInitializationVector
+    public static func == (a: hhVDoctorSDK.BlockMode.Error, b: hhVDoctorSDK.BlockMode.Error) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+}
+extension Blowfish {
+  convenience public init(key: Swift.String, iv: Swift.String, padding: hhVDoctorSDK.Padding = .pkcs7) throws
+}
+final public class Blowfish {
+  public enum Error : Swift.Error {
+    case dataPaddingRequired
+    case invalidKeyOrInitializationVector
+    case invalidInitializationVector
+    public static func == (a: hhVDoctorSDK.Blowfish.Error, b: hhVDoctorSDK.Blowfish.Error) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public static let blockSize: Swift.Int
+  final public let keySize: Swift.Int
+  public init(key: Swift.Array<Swift.UInt8>, blockMode: hhVDoctorSDK.BlockMode = .CBC(iv: Array<UInt8>(repeating: 0, count: Blowfish.blockSize)), padding: hhVDoctorSDK.Padding) throws
+  @objc deinit
+}
+extension Blowfish : hhVDoctorSDK.Cipher {
+  final public func encrypt<C>(_ bytes: C) throws -> Swift.Array<Swift.UInt8> where C : Swift.Collection, C.Element == Swift.UInt8, C.Index == Swift.Int
+  final public func decrypt<C>(_ bytes: C) throws -> Swift.Array<Swift.UInt8> where C : Swift.Collection, C.Element == Swift.UInt8, C.Index == Swift.Int
+}
+public class BusyPics {
+  public static let `default`: hhVDoctorSDK.BusyPics
+  public func cacheImgs()
+  public func getImgs() -> [Foundation.URL?]
+  @objc deinit
+}
+extension ChaCha20 {
+  convenience public init(key: Swift.String, iv: Swift.String) throws
+}
+final public class ChaCha20 {
+  public enum Error : Swift.Error {
+    case invalidKeyOrInitializationVector
+    public static func == (a: hhVDoctorSDK.ChaCha20.Error, b: hhVDoctorSDK.ChaCha20.Error) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public static let blockSize: Swift.Int
+  final public let keySize: Swift.Int
+  public init(key: Swift.Array<Swift.UInt8>, iv nonce: Swift.Array<Swift.UInt8>) throws
+  @objc deinit
+}
+extension ChaCha20 : hhVDoctorSDK.Cipher {
+  final public func encrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  final public func decrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+}
+extension ChaCha20 {
+  public struct Encryptor : hhVDoctorSDK.Updatable {
+    mutating public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
+  }
+}
+extension ChaCha20 {
+  public struct Decryptor : hhVDoctorSDK.Updatable {
+    mutating public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = true) throws -> Swift.Array<Swift.UInt8>
+  }
+}
+extension ChaCha20 : hhVDoctorSDK.Cryptors {
+  final public func makeEncryptor() -> hhVDoctorSDK.ChaCha20.Encryptor
+  final public func makeDecryptor() -> hhVDoctorSDK.ChaCha20.Decryptor
+  public typealias EncryptorType = hhVDoctorSDK.ChaCha20.Encryptor
+  public typealias DecryptorType = hhVDoctorSDK.ChaCha20.Decryptor
+}
+final public class Checksum {
+  @objc deinit
+}
+extension Checksum {
+  public static func crc32(_ message: Swift.Array<Swift.UInt8>, seed: Swift.UInt32? = nil, reflect: Swift.Bool = true) -> Swift.UInt32
+  public static func crc16(_ message: Swift.Array<Swift.UInt8>, seed: Swift.UInt16? = nil) -> Swift.UInt16
+}
+public enum CipherError : Swift.Error {
+  case encrypt
+  case decrypt
+  public static func == (a: hhVDoctorSDK.CipherError, b: hhVDoctorSDK.CipherError) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+}
+public protocol Cipher : AnyObject {
+  var keySize: Swift.Int { get }
+  func encrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  func encrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  func decrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  func decrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+}
+extension Cipher {
+  public func encrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  public func decrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+}
+final public class CMAC : hhVDoctorSDK.Authenticator {
+  public enum Error : Swift.Error {
+    case wrongKeyLength
+    public static func == (a: hhVDoctorSDK.CMAC.Error, b: hhVDoctorSDK.CMAC.Error) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public init(key: Swift.Array<Swift.UInt8>) throws
+  final public func authenticate(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  @objc deinit
+}
+@objc public class CommentBaseVC : UIKit.UIViewController {
+  @objc override dynamic public func viewWillAppear(_ animated: Swift.Bool)
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc public class CommentVC : hhVDoctorSDK.CommentBaseVC {
+  @objc override dynamic public func viewDidLoad()
+  public static func show(_ orderId: Swift.String, docId: Swift.String, uuid: Swift.Int?, type: hhVDoctorSDK.HHCallType?, _ model: hhVDoctorSDK.HHGetQuesetionModel?)
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+extension String {
+  public func subTo(_ index: Swift.Int) -> Swift.String
+}
+extension UIImageView {
+  public func hh_image(url: Foundation.URL?)
+  public func hh_image(url: Foundation.URL?, complete: ((UIKit.UIImage?, Foundation.URL?) -> Swift.Void)?)
+  public func hh_image(url: Foundation.URL?, placeHolder: UIKit.UIImage?)
+  public func hh_image(url: Foundation.URL?, placeHolder: UIKit.UIImage?, progresses: ((CoreGraphics.CGFloat) -> Swift.Void)?, complete: ((UIKit.UIImage?, Foundation.URL?) -> Swift.Void)?)
+}
+public func hh_downloadImg(_ url: Foundation.URL?, finish: @escaping ((UIKit.UIImage?, Foundation.Data?, Swift.Error?) -> Swift.Void))
+public protocol Cryptors : AnyObject {
+  associatedtype EncryptorType : hhVDoctorSDK.Updatable
+  associatedtype DecryptorType : hhVDoctorSDK.Updatable
+  func makeEncryptor() throws -> Self.EncryptorType
+  func makeDecryptor() throws -> Self.DecryptorType
+  static func randomIV(_ blockSize: Swift.Int) -> Swift.Array<Swift.UInt8>
+}
+extension Cryptors {
+  public static func randomIV(_ blockSize: Swift.Int) -> Swift.Array<Swift.UInt8>
+}
+extension Data {
+  public func checksum() -> Swift.UInt16
+  public func md5() -> Foundation.Data
+  public func sha1() -> Foundation.Data
+  public func sha224() -> Foundation.Data
+  public func sha256() -> Foundation.Data
+  public func sha384() -> Foundation.Data
+  public func sha512() -> Foundation.Data
+  public func sha3(_ variant: hhVDoctorSDK.SHA3.Variant) -> Foundation.Data
+  public func crc32(seed: Swift.UInt32? = nil, reflect: Swift.Bool = true) -> Foundation.Data
+  public func crc16(seed: Swift.UInt16? = nil) -> Foundation.Data
+  public func encrypt(cipher: hhVDoctorSDK.Cipher) throws -> Foundation.Data
+  public func decrypt(cipher: hhVDoctorSDK.Cipher) throws -> Foundation.Data
+  public func authenticate(with authenticator: hhVDoctorSDK.Authenticator) throws -> Foundation.Data
+}
+extension Data {
+  public init(hex: Swift.String)
+  public var bytes: Swift.Array<Swift.UInt8> {
+    get
+  }
+  public func toHexString() -> Swift.String
+}
+public struct DGElasticPullToRefreshConstants {
+  public static var WaveMaxHeight: CoreGraphics.CGFloat
+  public static var MinOffsetToPull: CoreGraphics.CGFloat
+  public static var LoadingContentInset: CoreGraphics.CGFloat
+  public static var LoadingViewSize: CoreGraphics.CGFloat
+}
+extension NSObject {
+  public func dg_addObserver(_ observer: ObjectiveC.NSObject, forKeyPath keyPath: Swift.String)
+  public func dg_removeObserver(_ observer: ObjectiveC.NSObject, forKeyPath keyPath: Swift.String)
+}
+extension UIScrollView {
+  public func dg_addPullToRefreshWithActionHandler(_ actionHandler: @escaping () -> Swift.Void, loadingView: hhVDoctorSDK.DGElasticPullToRefreshLoadingView?)
+  public func dg_removePullToRefresh()
+  public func dg_setPullToRefreshBackgroundColor(_ color: UIKit.UIColor)
+  public func dg_setPullToRefreshFillColor(_ color: UIKit.UIColor)
+  public func dg_stopLoading()
+  public func dg_startLoading()
+}
+extension UIView {
+  public func dg_center(_ usePresentationLayerIfPossible: Swift.Bool) -> CoreGraphics.CGPoint
+}
+extension UIPanGestureRecognizer {
+  public func dg_resign()
+}
+extension UIGestureRecognizer.State {
+  public func dg_isAnyOf(_ values: [UIKit.UIGestureRecognizer.State]) -> Swift.Bool
+}
+@objc open class DGElasticPullToRefreshLoadingView : UIKit.UIView {
+  @objc dynamic public init()
+  @objc override dynamic public init(frame: CoreGraphics.CGRect)
+  @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  open func setPullProgress(_ progress: CoreGraphics.CGFloat)
+  open func startAnimating()
+  open func stopLoading()
+  @objc deinit
+}
+extension CGFloat {
+  public func toRadians() -> CoreGraphics.CGFloat
+  public func toDegrees() -> CoreGraphics.CGFloat
+}
+@objc open class DGElasticPullToRefreshLoadingViewCircle : hhVDoctorSDK.DGElasticPullToRefreshLoadingView {
+  @objc override dynamic public init()
+  @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  override open func setPullProgress(_ progress: CoreGraphics.CGFloat)
+  override open func startAnimating()
+  override open func stopLoading()
+  @objc override dynamic open func tintColorDidChange()
+  @objc override dynamic open func layoutSubviews()
+  @objc override dynamic public init(frame: CoreGraphics.CGRect)
+  @objc deinit
+}
+public enum DGElasticPullToRefreshState : Swift.Int {
+  case stopped
+  case dragging
+  case animatingBounce
+  case loading
+  case animatingToStopped
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc open class DGElasticPullToRefreshView : UIKit.UIView {
+  @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @objc deinit
+  @objc override dynamic open func observeValue(forKeyPath keyPath: Swift.String?, of object: Any?, change: [Foundation.NSKeyValueChangeKey : Any]?, context: Swift.UnsafeMutableRawPointer?)
+  @objc override dynamic open func layoutSubviews()
+  @objc override dynamic public init(frame: CoreGraphics.CGRect)
+}
+public typealias Hash = hhVDoctorSDK.Digest
+public struct Digest {
+  public static func md5(_ bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
+  public static func sha1(_ bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
+  public static func sha224(_ bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
+  public static func sha256(_ bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
+  public static func sha384(_ bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
+  public static func sha512(_ bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
+  public static func sha2(_ bytes: Swift.Array<Swift.UInt8>, variant: hhVDoctorSDK.SHA2.Variant) -> Swift.Array<Swift.UInt8>
+  public static func sha3(_ bytes: Swift.Array<Swift.UInt8>, variant: hhVDoctorSDK.SHA3.Variant) -> Swift.Array<Swift.UInt8>
+}
+@objc public protocol FloatRatingViewDelegate {
+  @objc func floatRatingView(_ ratingView: hhVDoctorSDK.FloatRatingView, didUpdate rating: Swift.Float)
+  @objc optional func floatRatingView(_ ratingView: hhVDoctorSDK.FloatRatingView, isUpdating rating: Swift.Float)
+}
+@objc @IBDesignable open class FloatRatingView : UIKit.UIView {
+  weak open var delegate: hhVDoctorSDK.FloatRatingViewDelegate?
+  @objc @IBInspectable open var emptyImage: UIKit.UIImage? {
+    @objc get
+    @objc set
+  }
+  @objc @IBInspectable open var fullImage: UIKit.UIImage? {
+    @objc get
+    @objc set
+  }
+  @objc @IBInspectable open var minRating: Swift.Int {
+    @objc get
+    @objc set
+  }
+  @objc @IBInspectable open var maxRating: Swift.Int {
+    @objc get
+    @objc set
+  }
+  @objc @IBInspectable open var minImageSize: CoreGraphics.CGSize
+  @objc @IBInspectable open var rating: Swift.Float {
+    @objc get
+    @objc set
+  }
+  @objc @IBInspectable open var editable: Swift.Bool
+  @objc @IBInspectable open var halfRatings: Swift.Bool
+  @objc @IBInspectable open var floatRatings: Swift.Bool
+  @objc required override dynamic public init(frame: CoreGraphics.CGRect)
+  @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @objc override dynamic open func layoutSubviews()
+  @objc override dynamic open func touchesBegan(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @objc override dynamic open func touchesMoved(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @objc override dynamic open func touchesEnded(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @objc deinit
+}
+@objc public class HHAccountManager : ObjectiveC.NSObject {
+  public static func getUUID() -> Swift.String?
+  @objc override dynamic public init()
+  @objc deinit
+}
+public class HHCameraConfig {
+  weak public var sender: UIKit.UIViewController!
+  public var mediaType: hhVDoctorSDK.HHMediaType
+  public var isGrayCam: Swift.Bool
+  public var canReduce: Swift.Bool
+  public var autoUpload: Swift.Bool
+  public var maxCount: Swift.Int?
+  public var crop: hhVDoctorSDK.onCropFinish?
+  public var canceled: hhVDoctorSDK.onCanceled?
+  public init()
+  public func build(_ block: (inout hhVDoctorSDK.HHCameraConfig) -> Swift.Void) -> hhVDoctorSDK.HHCameraConfig
+  @objc deinit
+}
+public typealias HHFetchBlock = (UIKit.UIImage?, [Swift.AnyHashable : Any]?) -> Swift.Void
+public typealias onCanceled = (() -> Swift.Void)
+public typealias onCapFinished = (([hhVDoctorSDK.HHCameraImageModel]?) -> Swift.Void)
+public typealias onCropFinish = (UIKit.UIImage, Swift.String?) -> Swift.Void
+public enum HHMediaType : Swift.Int {
+  case cusCamera
+  case sysCamera
+  case cusVideo
+  case sysVideo
+  case photoImage
+  case photoVideo
+  case cusPhoto
+  case sysCrop
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public enum DateFormat : Swift.String {
+  case Full
+  case SingleDate
+  case Single
+  case WithoutSecond
+  case WithoutYearAndSecond
+  case HourMinute
+  case CN_Month_Day
+  case CN_Hour_Minute
+  public typealias RawValue = Swift.String
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@objc public class HHDateUtils : ObjectiveC.NSObject {
+  public class func getDateForChinaStr() -> Swift.String
+  public static func stringWithDurationFromSeconds(_ seconds: Foundation.TimeInterval) -> Swift.String
+  public static func component(_ date: Foundation.Date) -> Foundation.DateComponents
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension HHDateUtils {
+  public class func date2String(_ date: Foundation.Date, format: Swift.String) -> Swift.String
+  public class func date2String(_ date: Foundation.Date, format: hhVDoctorSDK.DateFormat) -> Swift.String
+}
+extension HHDateUtils {
+  public class func string2Date(_ str: Swift.String, format: hhVDoctorSDK.DateFormat) -> Foundation.Date?
+  public class func string2Date(_ str: Swift.String, format: Swift.String) -> Foundation.Date?
+}
+extension HHDateUtils {
+  public static func dateStringFromNow(_ date: Swift.Int) -> Swift.String
+  public static func dateStringFromInt(_ date: Swift.Int) -> Swift.String
+  public static func dateYearStringFromInt(_ date: Swift.Int) -> Swift.String
+}
+@objc open class HHDeviceManager : ObjectiveC.NSObject {
+  public static func jailBrokend() -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+}
+public struct HHEmptyModel : hhVDoctorSDK.Mappable {
+  public init()
+  public init?(map: hhVDoctorSDK.Map)
+  mutating public func mapping(map: hhVDoctorSDK.Map)
+}
+public class HHEncryptUtils {
+  public static func encrypto(key: Swift.String, content: Swift.String) -> Swift.String?
+  public static func decrypto(key: Swift.String, content: Swift.String) -> Swift.String?
+  public static func encrypto(key: Swift.String, content: Foundation.Data) -> Foundation.Data?
+  public static func decrypto(key: Swift.String, content: Foundation.Data) -> Foundation.Data?
+  @objc deinit
+}
+public struct HHGetQuesetionModel : hhVDoctorSDK.Mappable {
+  public var question: hhVDoctorSDK.HHQuesetionModel?
+  public var rate: [hhVDoctorSDK.rateModel]?
+  public init?(map: hhVDoctorSDK.Map)
+  public init()
+  mutating public func mapping(map: hhVDoctorSDK.Map)
+  public func isHaveQ() -> Swift.Bool
+}
+public struct HHQuesetionModel : hhVDoctorSDK.Mappable {
+  public var answerOne: Swift.String?
+  public var answerTwo: Swift.String?
+  public var content: Swift.String?
+  public var id: Swift.Int?
+  public init?(map: hhVDoctorSDK.Map)
+  mutating public func mapping(map: hhVDoctorSDK.Map)
+}
+public struct rateModel : hhVDoctorSDK.Mappable {
+  public var createTime: Swift.Int?
+  public var content: Swift.String?
+  public var state: Swift.Int?
+  public var id: Swift.Int?
+  public var answerOne: Swift.String?
+  public init?(map: hhVDoctorSDK.Map)
+  mutating public func mapping(map: hhVDoctorSDK.Map)
+}
+@objc public class HHFileCacheManager : ObjectiveC.NSObject {
+  public enum HHAssetPathType {
+    case image
+    case video
+    case sound
+    case dicom
+    case fb
+    case other
+    case dataBase
+    public static func == (a: hhVDoctorSDK.HHFileCacheManager.HHAssetPathType, b: hhVDoctorSDK.HHFileCacheManager.HHAssetPathType) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension HHFileCacheManager {
+  public class func getFileFormat(_ name: Swift.String) -> hhVDoctorSDK.HHFileCacheManager.HHAssetPathType
+  public class func getFilePath(_ name: Swift.String) -> Swift.String?
+}
+extension HHFileCacheManager {
+  public static func saveString2File(_ string: Swift.String?, fileName: Swift.String)
+  public static func stringFromFile(_ fileName: Swift.String) -> Swift.String?
+}
+public var uploadManager: hhVDoctorSDK.UploadQueue {
+  get
+}
+public class UploadQueue {
+  @discardableResult
+  public func upload(files: [Swift.String], config: hhVDoctorSDK.HHUploadConfig) -> hhVDoctorSDK.HHFileUploadManager
+  public func cancelAll(_ finished: (() -> Swift.Void)? = nil)
+  @objc deinit
+}
+public class HHFileUploadManager {
+  public var mFileQueue: [Swift.String]
+  public var config: hhVDoctorSDK.HHUploadConfig!
+  public var mTransFile: Swift.String?
+  public var isUploading: Swift.Bool
+  public init(files: [Swift.String], config: hhVDoctorSDK.HHUploadConfig)
+  public func uploadFile(_ file: [Swift.String])
+  public func cancalFiles(_ files: [Swift.String], cancelFinish: ((Swift.String) -> Swift.Void)? = nil)
+  public func cancelAll(_ finished: (() -> Swift.Void)? = nil)
+  @objc deinit
+}
+public protocol HHHUDable {
+  var autoDismissDuration: Foundation.TimeInterval { get }
+  func showHUD()
+  func dismissHUD()
+  func showSuccess(_ message: Swift.String?)
+  func showError(_ messgae: Swift.String?)
+  func setDismissDuration(_ duraion: Foundation.TimeInterval)
+}
+@objc public class HHLocation : ObjectiveC.NSObject {
+  @objc public static let `default`: hhVDoctorSDK.HHLocation
+  @objc public func startLocation(lng: Swift.String, lat: Swift.String)
+  @objc public func closeLocation()
+  @objc override dynamic public init()
+  @objc deinit
+}
+public enum HHLogMode : Swift.Int {
+  case error
+  case warn
+  case info
+  case debug
+  case verbose
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public func logging(type: hhVDoctorSDK.HHLogMode = .info, _ tip: Swift.String)
+@objc open class HHMediaStatusCheckUtils : ObjectiveC.NSObject {
+  open class func checkCameraAccess() -> Swift.Bool
+  open class func checkCameraVideoPermission() -> Swift.Bool
+  open class func checkAlbumAccess() -> Swift.Bool
+  open class func checkAudioAccess() -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+}
+public class HHModelCache {
+  public static let instance: hhVDoctorSDK.HHModelCache
+  public func cacheModel(_ name: Swift.String, content: Swift.String?)
+  public func cacheModel(_ name: Swift.String, content: Foundation.Data?)
+  public func getCahceInfo(_ docId: Swift.String?, name: Swift.String, key: Swift.String) -> Swift.String?
+  public func getCacheAsync(_ docId: Swift.String?, name: Swift.String, key: Swift.String, callback: @escaping ((Swift.String?) -> Swift.Void))
+  @objc deinit
+}
+public typealias HHLoginHandler = ((Swift.String?) -> Swift.Void)
+@objc public class HHMSDK : ObjectiveC.NSObject {
+  @objc public static let `default`: hhVDoctorSDK.HHMSDK
+  @objc public func start(option: hhVDoctorSDK.HHSDKOptions)
+  @objc public func login(userToken: Swift.String, completion: @escaping hhVDoctorSDK.HHLoginHandler)
+  @available(*, deprecated, message: "Use login(userToken: String, completion: @escaping HHLoginHandler) instead.")
+  @objc public func login(uuid: Swift.Int, completion: @escaping hhVDoctorSDK.HHLoginHandler)
+  @objc public func logout(complete: ((Swift.String?) -> Swift.Void)? = nil)
+  @objc public func switchEnv(_ development: Swift.Bool)
+  @objc public func startCall(_ type: hhVDoctorSDK.HHCallType)
+  @objc public func updateAPNS(token: Foundation.Data)
+  @objc public var SDKVersion: Swift.String {
+    @objc get
+  }
+  @objc public var isLogined: Swift.Bool {
+    @objc get
+  }
+  @objc public var userToken: Swift.String? {
+    @objc get
+  }
+  @objc public func add(delegate: hhVDoctorSDK.HHMVideoDelegate)
+  @objc public func remove(delegate: hhVDoctorSDK.HHMVideoDelegate)
+  @objc public var aliPayHook: ((Swift.String, Swift.String, @escaping (([Swift.String : Any]) -> Swift.Void)) -> Swift.Bool)?
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension HHMSDK {
+  @objc dynamic public func startMemberCall(needSelectMember: Swift.Bool = true)
+}
+extension HHMSDK {
+  @objc dynamic public func startNewCall(_ uuid: Swift.Int)
+}
+extension HHMSDK {
+  @objc dynamic public func getMedicDetail(userToken: Swift.String, medicId: Swift.String) -> Swift.String
+  @objc dynamic public func getMedicList(userToken: Swift.String) -> Swift.String
+  @objc dynamic public func getAllMedics(userToken: Swift.String) -> Swift.String
+}
+@objc public enum HHMLoginCode : Swift.Int {
+  case OK = 0
+  case netError = -1
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum SkipType : Swift.Int {
+  case push
+  case present
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum HHCallType : Swift.Int {
+  case child = 600000
+  case adult = 600002
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum HHMCallingState : Swift.Int {
+  case onStart = 0
+  case waitingDoctor
+  case callFreeDoctor
+  case callConnect
+  case didRing
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public protocol HHMVideoDelegate : ObjectiveC.NSObjectProtocol {
+  @objc optional func callStateChange(_ state: hhVDoctorSDK.HHMCallingState)
+  @objc optional func callDidEstablish()
+  @objc optional func getChatParentView(_ view: UIKit.UIView)
+  @objc optional func onFail(_ errorCode: Swift.Int, errrorStr: Swift.String?)
+  @objc optional func onCancel()
+  @objc optional func callDidFinish()
+  @objc optional func onExtensionDoctor()
+  @objc optional func onReceive(_ callID: Swift.String)
+  @objc optional func onResponse(_ accept: Swift.Bool)
+  @objc optional func onForceOffline()
+}
+public typealias HHNetError = ((Swift.String) -> (Swift.Void))
+public typealias HHNetSuccessNoData = () -> Swift.Void
+public typealias NetResult = (Swift.Bool, Swift.String) -> (Swift.Void)
+public enum HHRequestMethod {
+  case get
+  case post
+  public static func == (a: hhVDoctorSDK.HHRequestMethod, b: hhVDoctorSDK.HHRequestMethod) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+}
+public enum HHServerType {
+  case pay
+  case pacs
+  case weixin
+  case uploadLog
+  public static func == (a: hhVDoctorSDK.HHServerType, b: hhVDoctorSDK.HHServerType) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+}
+public struct HHRequestData {
+  public init(body: [Swift.String : Any] = ["default_sw":"default"], param: [Swift.String : Any] = ["default_sw":"default"])
+  public var mHttpBody: [Swift.String : Any]
+  public var mParameters: [Swift.String : Any]
+}
+extension UIControl.State : Swift.Hashable {
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@objc @IBDesignable public class HHPagerView : UIKit.UIView, UIKit.UICollectionViewDataSource, UIKit.UICollectionViewDelegate {
+  @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @objc override dynamic public func layoutSubviews()
+  @objc override dynamic public func willMove(toWindow newWindow: UIKit.UIWindow?)
+  @objc override dynamic public func prepareForInterfaceBuilder()
+  @objc deinit
+  @objc public func numberOfSections(in collectionView: UIKit.UICollectionView) -> Swift.Int
+  @objc public func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
+  @objc public func collectionView(_ collectionView: UIKit.UICollectionView, cellForItemAt indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewCell
+  @objc public func collectionView(_ collectionView: UIKit.UICollectionView, shouldHighlightItemAt indexPath: Foundation.IndexPath) -> Swift.Bool
+  @objc public func collectionView(_ collectionView: UIKit.UICollectionView, didHighlightItemAt indexPath: Foundation.IndexPath)
+  @objc public func collectionView(_ collectionView: UIKit.UICollectionView, shouldSelectItemAt indexPath: Foundation.IndexPath) -> Swift.Bool
+  @objc public func collectionView(_ collectionView: UIKit.UICollectionView, didSelectItemAt indexPath: Foundation.IndexPath)
+  @objc public func collectionView(_ collectionView: UIKit.UICollectionView, willDisplay cell: UIKit.UICollectionViewCell, forItemAt indexPath: Foundation.IndexPath)
+  @objc public func collectionView(_ collectionView: UIKit.UICollectionView, didEndDisplaying cell: UIKit.UICollectionViewCell, forItemAt indexPath: Foundation.IndexPath)
+  @objc public func scrollViewDidScroll(_ scrollView: UIKit.UIScrollView)
+  @objc public func scrollViewWillBeginDragging(_ scrollView: UIKit.UIScrollView)
+  @objc public func scrollViewWillEndDragging(_ scrollView: UIKit.UIScrollView, withVelocity velocity: CoreGraphics.CGPoint, targetContentOffset: Swift.UnsafeMutablePointer<CoreGraphics.CGPoint>)
+  @objc public func scrollViewDidEndDecelerating(_ scrollView: UIKit.UIScrollView)
+  @objc public func scrollViewDidEndScrollingAnimation(_ scrollView: UIKit.UIScrollView)
+}
+@objc public enum HHPagerViewTransformerType : Swift.Int {
+  case crossFading
+  case zoomOut
+  case depth
+  case overlap
+  case linear
+  case coverFlow
+  case ferrisWheel
+  case invertedFerrisWheel
+  case cubic
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public class HHPhotoPickerController : UIKit.UINavigationController {
+  @objc override dynamic public func viewDidLoad()
+  convenience public init(localPath: Swift.String? = nil, deleteMode: Swift.Bool = false, finish: (([hhVDoctorSDK.HHCameraImageModel]?) -> Swift.Void)? = nil)
+  public static func selectLocalImags(path: Swift.String? = nil, finish: (([hhVDoctorSDK.HHCameraImageModel]?) -> Swift.Void)?) -> hhVDoctorSDK.HHPhotoPickerController
+  @objc deinit
+  @available(iOS 5.0, *)
+  @objc override dynamic public init(navigationBarClass: Swift.AnyClass?, toolbarClass: Swift.AnyClass?)
+  @objc override dynamic public init(rootViewController: UIKit.UIViewController)
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+}
+public class HHRequest<T> where T : hhVDoctorSDK.Mappable {
+  public typealias HHNetSuccess = (T) -> Swift.Void
+  public typealias HHNetSuccessForArray = ([T]) -> Swift.Void
+  public var mRequestData: hhVDoctorSDK.HHRequestData?
+  public var mRequestFail: hhVDoctorSDK.HHNetError?
+  public var mRequestSuccess: hhVDoctorSDK.HHRequest<T>.HHNetSuccess?
+  public var mRequestSuccessNoData: hhVDoctorSDK.HHNetSuccessNoData?
+  public var mRequestSuccessForArray: hhVDoctorSDK.HHRequest<T>.HHNetSuccessForArray?
+  public var mConfig: hhVDoctorSDK.HHRequestConfig?
+  required public init(aRequestConfig: hhVDoctorSDK.HHRequestConfig, requestData: hhVDoctorSDK.HHRequestData? = nil)
+  public func start()
+  public func cancel()
+  @objc deinit
+}
+public protocol HHRequestConfig {
+  func serviceURLSuffix() -> Swift.String
+  func isNeedUserInfo() -> Swift.Bool
+  func requestMethod() -> hhVDoctorSDK.HHRequestMethod
+  func requestType() -> hhVDoctorSDK.HHServerType
+  func extensionUrlHost() -> Swift.String?
+  func needSaveCache() -> Swift.Bool
+  func cacheKey() -> Swift.String?
+  func loadAppVersion() -> Swift.Bool
+  func needDNS() -> Swift.Bool
+  func needEncrypt() -> Swift.Bool
+}
+extension HHRequestConfig {
+  public func needSaveCache() -> Swift.Bool
+  public func cacheKey() -> Swift.String?
+  public func isNeedUserInfo() -> Swift.Bool
+  public func requestMethod() -> hhVDoctorSDK.HHRequestMethod
+  public func requestType() -> hhVDoctorSDK.HHServerType
+  public func extensionUrlHost() -> Swift.String?
+  public func isHaveExtensionUrl() -> Swift.Bool
+  public func loadAppVersion() -> Swift.Bool
+  public func needDNS() -> Swift.Bool
+  public func needEncrypt() -> Swift.Bool
+}
+extension HHRequest {
+  public func startForArray(_ successCallBack: @escaping hhVDoctorSDK.HHRequest<T>.HHNetSuccessForArray, failCallBack: @escaping hhVDoctorSDK.HHNetError)
+}
+public var HMDefaultOpt: hhVDoctorSDK.HHSDKOptions {
+  get
+}
+public var HMHudManager: hhVDoctorSDK.HHHUDable {
+  get
+}
+@objc public class HHSDKOptions : ObjectiveC.NSObject {
+  @objc public static let `default`: hhVDoctorSDK.HHSDKOptions
+  @objc public var hudDisTime: Foundation.TimeInterval {
+    @objc get
+    @objc set
+  }
+  @objc public var isDebug: Swift.Bool
+  @objc public var isDevelopment: Swift.Bool
+  public var hudManager: hhVDoctorSDK.HHHUDable
+  @objc public var productId: Swift.String
+  @objc public var cerName: Swift.String?
+  public var mExtension: Swift.String
+  public var logCallback: ((Swift.String) -> Swift.Void)?
+  @objc public var mVideoOptions: hhVDoctorSDK.VideoOptions
+  @objc public var mMessageOptions: hhVDoctorSDK.MessageOptions
+  @objc public var mUserCenterOptions: hhVDoctorSDK.UsercenterOptions
+  final public let sdkVersion: Swift.String
+  @objc public init(productId: Swift.String, isDebug: Swift.Bool = true, isDevelop: Swift.Bool = true)
+  @objc public func setUserExtension(userExtension: Swift.String)
+  @objc public func setCallExtension(callExtension: Swift.String)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc public class VideoOptions : ObjectiveC.NSObject {
+  public var filterCallerInfo: Swift.Bool
+  @objc public var allowBeauty: Swift.Bool
+  @objc public var allowEvaluate: Swift.Bool
+  @objc public var allowAddMember: Swift.Bool
+  @objc public var allowMulti: Swift.Bool
+  public var mCallExtension: Swift.String
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc public class MessageOptions : ObjectiveC.NSObject {
+  @objc public var isByPresent: Swift.Bool
+  @objc public var isFilterSummary: Swift.Bool
+  @objc public var isFilterMedicinal: Swift.Bool
+  @objc public var defaultDocHeader: Swift.String
+  @objc public var defaultDocName: Swift.String
+  @objc public var messageTitle: Swift.String
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc public class UsercenterOptions : ObjectiveC.NSObject {
+  @objc public var enableVipInfo: Swift.Bool
+  @objc public var hideUserCenter: Swift.Bool
+  @objc public var enableActivate: Swift.Bool
+  @objc public var enableMedical: Swift.Bool
+  @objc public var enableAddMemberInDoc: Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+}
+public class HHStatics {
+  public static let `default`: hhVDoctorSDK.HHStatics
+  public func send(params: [Swift.String : Any])
+  @objc deinit
+}
+public struct HHStaticsConfig : hhVDoctorSDK.SDKRequest {
+  public func serviceURLSuffix() -> Swift.String
+  public func requestMethod() -> hhVDoctorSDK.HHRequestMethod
+  public func needDNS() -> Swift.Bool
+  public func needEncrypt() -> Swift.Bool
+  public func extensionUrlHost() -> Swift.String?
+  public func loadAppVersion() -> Swift.Bool
+}
+public class HHUrl {
+  public static func makeUrl(_ url: Swift.String) -> Swift.String
+  @objc deinit
+}
+public class UrlParams {
+  public static func addCommon(_ param: [Swift.String : Any]?) -> [Swift.String : Any]
+  @objc deinit
+}
+public class HHUserModel : hhVDoctorSDK.Mappable {
+  public var product: hhVDoctorSDK.HHMemberInfoModel?
+  public var uuid: Swift.Int?
+  public var isMember: Swift.Bool?
+  required public init?(map: hhVDoctorSDK.Map)
+  public func mapping(map: hhVDoctorSDK.Map)
+  @objc deinit
+}
+public struct HHMemberInfoModel : hhVDoctorSDK.Mappable {
+  public var productServiceId: Swift.Int?
+  public var productStatusDescn: Swift.String?
+  public init?(map: hhVDoctorSDK.Map)
+  mutating public func mapping(map: hhVDoctorSDK.Map)
+}
+open class HHValueObservable<T> {
+  public typealias Observer = (T) -> Swift.Void
+  open var observer: hhVDoctorSDK.HHValueObservable<T>.Observer?
+  open func observe(_ observer: hhVDoctorSDK.HHValueObservable<T>.Observer?)
+  open var value: T {
+    get
+    set
+  }
+  public init(_ v: T)
+  @objc deinit
+}
+public struct HKDF {
+  public enum Error : Swift.Error {
+    case invalidInput
+    case derivedKeyTooLong
+    public static func == (a: hhVDoctorSDK.HKDF.Error, b: hhVDoctorSDK.HKDF.Error) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public init(password: Swift.Array<Swift.UInt8>, salt: Swift.Array<Swift.UInt8>? = nil, info: Swift.Array<Swift.UInt8>? = nil, keyLength: Swift.Int? = nil, variant: hhVDoctorSDK.HMAC.Variant = .sha256) throws
+  public func calculate() throws -> Swift.Array<Swift.UInt8>
+}
+extension HMAC {
+  convenience public init(key: Swift.String, variant: hhVDoctorSDK.HMAC.Variant = .md5) throws
+}
+final public class HMAC : hhVDoctorSDK.Authenticator {
+  public enum Error : Swift.Error {
+    case authenticateError
+    case invalidInput
+    public static func == (a: hhVDoctorSDK.HMAC.Error, b: hhVDoctorSDK.HMAC.Error) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public enum Variant {
+    case sha1, sha256, sha384, sha512, md5
+    public static func == (a: hhVDoctorSDK.HMAC.Variant, b: hhVDoctorSDK.HMAC.Variant) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public init(key: Swift.Array<Swift.UInt8>, variant: hhVDoctorSDK.HMAC.Variant = .md5)
+  final public func authenticate(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  @objc deinit
+}
+public let KeychainAccessErrorDomain: Swift.String
+public enum ItemClass {
+  case genericPassword
+  case internetPassword
+}
+public enum ProtocolType {
+  case ftp
+  case ftpAccount
+  case http
+  case irc
+  case nntp
+  case pop3
+  case smtp
+  case socks
+  case imap
+  case ldap
+  case appleTalk
+  case afp
+  case telnet
+  case ssh
+  case ftps
+  case https
+  case httpProxy
+  case httpsProxy
+  case ftpProxy
+  case smb
+  case rtsp
+  case rtspProxy
+  case daap
+  case eppc
+  case ipp
+  case nntps
+  case ldaps
+  case telnetS
+  case imaps
+  case ircs
+  case pop3S
+}
+public enum AuthenticationType {
+  case ntlm
+  case msn
+  case dpa
+  case rpa
+  case httpBasic
+  case httpDigest
+  case htmlForm
+  case `default`
+}
+public enum Accessibility {
+  case whenUnlocked
+  case afterFirstUnlock
+  case always
+  @available(iOS 8.0, OSX 10.10, *)
+  case whenPasscodeSetThisDeviceOnly
+  case whenUnlockedThisDeviceOnly
+  case afterFirstUnlockThisDeviceOnly
+  case alwaysThisDeviceOnly
+}
+public struct AuthenticationPolicy : Swift.OptionSet {
+  @available(iOS 8.0, OSX 10.10, *)
+  @available(watchOS, unavailable)
+  public static let userPresence: hhVDoctorSDK.AuthenticationPolicy
+  @available(iOS 9.0, *)
+  @available(OSX, unavailable)
+  @available(watchOS, unavailable)
+  public static let touchIDAny: hhVDoctorSDK.AuthenticationPolicy
+  @available(iOS 9.0, *)
+  @available(OSX, unavailable)
+  @available(watchOS, unavailable)
+  public static let touchIDCurrentSet: hhVDoctorSDK.AuthenticationPolicy
+  @available(iOS 9.0, OSX 10.11, *)
+  @available(watchOS, unavailable)
+  public static let devicePasscode: hhVDoctorSDK.AuthenticationPolicy
+  @available(iOS 9.0, *)
+  @available(OSX, unavailable)
+  @available(watchOS, unavailable)
+  public static let or: hhVDoctorSDK.AuthenticationPolicy
+  @available(iOS 9.0, *)
+  @available(OSX, unavailable)
+  @available(watchOS, unavailable)
+  public static let and: hhVDoctorSDK.AuthenticationPolicy
+  @available(iOS 9.0, *)
+  @available(OSX, unavailable)
+  @available(watchOS, unavailable)
+  public static let privateKeyUsage: hhVDoctorSDK.AuthenticationPolicy
+  @available(iOS 9.0, *)
+  @available(OSX, unavailable)
+  @available(watchOS, unavailable)
+  public static let applicationPassword: hhVDoctorSDK.AuthenticationPolicy
+  public let rawValue: Swift.UInt
+  public init(rawValue: Swift.UInt)
+  public typealias Element = hhVDoctorSDK.AuthenticationPolicy
+  public typealias ArrayLiteralElement = hhVDoctorSDK.AuthenticationPolicy
+  public typealias RawValue = Swift.UInt
+}
+public struct Attributes {
+  public var `class`: Swift.String? {
+    get
+  }
+  public var data: Foundation.Data? {
+    get
+  }
+  public var ref: Foundation.Data? {
+    get
+  }
+  public var persistentRef: Foundation.Data? {
+    get
+  }
+  public var accessible: Swift.String? {
+    get
+  }
+  public var accessControl: Security.SecAccessControl? {
+    get
+  }
+  public var accessGroup: Swift.String? {
+    get
+  }
+  public var synchronizable: Swift.Bool? {
+    get
+  }
+  public var creationDate: Foundation.Date? {
+    get
+  }
+  public var modificationDate: Foundation.Date? {
+    get
+  }
+  public var attributeDescription: Swift.String? {
+    get
+  }
+  public var comment: Swift.String? {
+    get
+  }
+  public var creator: Swift.String? {
+    get
+  }
+  public var type: Swift.String? {
+    get
+  }
+  public var label: Swift.String? {
+    get
+  }
+  public var isInvisible: Swift.Bool? {
+    get
+  }
+  public var isNegative: Swift.Bool? {
+    get
+  }
+  public var account: Swift.String? {
+    get
+  }
+  public var service: Swift.String? {
+    get
+  }
+  public var generic: Foundation.Data? {
+    get
+  }
+  public var securityDomain: Swift.String? {
+    get
+  }
+  public var server: Swift.String? {
+    get
+  }
+  public var `protocol`: Swift.String? {
+    get
+  }
+  public var authenticationType: Swift.String? {
+    get
+  }
+  public var port: Swift.Int? {
+    get
+  }
+  public var path: Swift.String? {
+    get
+  }
+  public subscript(key: Swift.String) -> Any? {
+    get
+  }
+}
+final public class Keychain {
+  final public var itemClass: hhVDoctorSDK.ItemClass {
+    get
+  }
+  final public var service: Swift.String {
+    get
+  }
+  final public var accessGroup: Swift.String? {
+    get
+  }
+  final public var server: Foundation.URL {
+    get
+  }
+  final public var protocolType: hhVDoctorSDK.ProtocolType {
+    get
+  }
+  final public var authenticationType: hhVDoctorSDK.AuthenticationType {
+    get
+  }
+  final public var accessibility: hhVDoctorSDK.Accessibility {
+    get
+  }
+  @available(iOS 8.0, OSX 10.10, *)
+  @available(watchOS, unavailable)
+  final public var authenticationPolicy: hhVDoctorSDK.AuthenticationPolicy? {
+    get
+  }
+  final public var synchronizable: Swift.Bool {
+    get
+  }
+  final public var label: Swift.String? {
+    get
+  }
+  final public var comment: Swift.String? {
+    get
+  }
+  @available(iOS 8.0, OSX 10.10, *)
+  @available(watchOS, unavailable)
+  final public var authenticationPrompt: Swift.String? {
+    get
+  }
+  @available(iOS 9.0, OSX 10.11, *)
+  final public var authenticationContext: LocalAuthentication.LAContext? {
+    get
+  }
+  convenience public init()
+  convenience public init(service: Swift.String)
+  convenience public init(accessGroup: Swift.String)
+  convenience public init(service: Swift.String, accessGroup: Swift.String)
+  convenience public init(server: Swift.String, protocolType: hhVDoctorSDK.ProtocolType, authenticationType: hhVDoctorSDK.AuthenticationType = .default)
+  convenience public init(server: Foundation.URL, protocolType: hhVDoctorSDK.ProtocolType, authenticationType: hhVDoctorSDK.AuthenticationType = .default)
+  final public func accessibility(_ accessibility: hhVDoctorSDK.Accessibility) -> hhVDoctorSDK.Keychain
+  @available(iOS 8.0, OSX 10.10, *)
+  @available(watchOS, unavailable)
+  final public func accessibility(_ accessibility: hhVDoctorSDK.Accessibility, authenticationPolicy: hhVDoctorSDK.AuthenticationPolicy) -> hhVDoctorSDK.Keychain
+  final public func synchronizable(_ synchronizable: Swift.Bool) -> hhVDoctorSDK.Keychain
+  final public func label(_ label: Swift.String) -> hhVDoctorSDK.Keychain
+  final public func comment(_ comment: Swift.String) -> hhVDoctorSDK.Keychain
+  final public func attributes(_ attributes: [Swift.String : Any]) -> hhVDoctorSDK.Keychain
+  @available(iOS 8.0, OSX 10.10, *)
+  @available(watchOS, unavailable)
+  final public func authenticationPrompt(_ authenticationPrompt: Swift.String) -> hhVDoctorSDK.Keychain
+  @available(iOS 9.0, OSX 10.11, *)
+  final public func authenticationContext(_ authenticationContext: LocalAuthentication.LAContext) -> hhVDoctorSDK.Keychain
+  final public func get(_ key: Swift.String) throws -> Swift.String?
+  final public func getString(_ key: Swift.String) throws -> Swift.String?
+  final public func getData(_ key: Swift.String) throws -> Foundation.Data?
+  final public func get<T>(_ key: Swift.String, handler: (hhVDoctorSDK.Attributes?) -> T) throws -> T
+  final public func set(_ value: Swift.String, key: Swift.String) throws
+  final public func set(_ value: Foundation.Data, key: Swift.String) throws
+  final public subscript(key: Swift.String) -> Swift.String? {
+    get
+    set
+  }
+  final public subscript(string key: Swift.String) -> Swift.String? {
+    get
+    set
+  }
+  final public subscript(data key: Swift.String) -> Foundation.Data? {
+    get
+    set
+  }
+  final public subscript(attributes key: Swift.String) -> hhVDoctorSDK.Attributes? {
+    get
+  }
+  final public func remove(_ key: Swift.String) throws
+  final public func removeAll() throws
+  final public func contains(_ key: Swift.String) throws -> Swift.Bool
+  final public class func allKeys(_ itemClass: hhVDoctorSDK.ItemClass) -> [(Swift.String, Swift.String)]
+  final public func allKeys() -> [Swift.String]
+  final public class func allItems(_ itemClass: hhVDoctorSDK.ItemClass) -> [[Swift.String : Any]]
+  final public func allItems() -> [[Swift.String : Any]]
+  @available(iOS 8.0, *)
+  final public func getSharedPassword(_ completion: @escaping (Swift.String?, Swift.String?, Swift.Error?) -> () = { account, password, error -> () in })
+  @available(iOS 8.0, *)
+  final public func getSharedPassword(_ account: Swift.String, completion: @escaping (Swift.String?, Swift.Error?) -> () = { password, error -> () in })
+  @available(iOS 8.0, *)
+  final public func setSharedPassword(_ password: Swift.String, account: Swift.String, completion: @escaping (Swift.Error?) -> () = { e -> () in })
+  @available(iOS 8.0, *)
+  final public func removeSharedPassword(_ account: Swift.String, completion: @escaping (Swift.Error?) -> () = { e -> () in })
+  @available(iOS 8.0, *)
+  final public class func requestSharedWebCredential(_ completion: @escaping ([[Swift.String : Swift.String]], Swift.Error?) -> () = { credentials, error -> () in })
+  @available(iOS 8.0, *)
+  final public class func requestSharedWebCredential(domain: Swift.String, completion: @escaping ([[Swift.String : Swift.String]], Swift.Error?) -> () = { credentials, error -> () in })
+  @available(iOS 8.0, *)
+  final public class func requestSharedWebCredential(domain: Swift.String, account: Swift.String, completion: @escaping ([[Swift.String : Swift.String]], Swift.Error?) -> () = { credentials, error -> () in })
+  @available(iOS 8.0, *)
+  final public class func generatePassword() -> Swift.String
+  @objc deinit
+}
+extension Keychain : Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
+  final public var description: Swift.String {
+    get
+  }
+  final public var debugDescription: Swift.String {
+    get
+  }
+}
+extension Attributes : Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+extension ItemClass : Swift.RawRepresentable, Swift.CustomStringConvertible {
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+  public typealias RawValue = Swift.String
+}
+extension ProtocolType : Swift.RawRepresentable, Swift.CustomStringConvertible {
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+  public typealias RawValue = Swift.String
+}
+extension AuthenticationType : Swift.RawRepresentable, Swift.CustomStringConvertible {
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+  public typealias RawValue = Swift.String
+}
+extension Accessibility : Swift.RawRepresentable, Swift.CustomStringConvertible {
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+  public typealias RawValue = Swift.String
+}
+public enum Status : Darwin.OSStatus, Swift.Error {
+  case success
+  case unimplemented
+  case diskFull
+  case io
+  case opWr
+  case param
+  case wrPerm
+  case allocate
+  case userCanceled
+  case badReq
+  case internalComponent
+  case notAvailable
+  case readOnly
+  case authFailed
+  case noSuchKeychain
+  case invalidKeychain
+  case duplicateKeychain
+  case duplicateCallback
+  case invalidCallback
+  case duplicateItem
+  case itemNotFound
+  case bufferTooSmall
+  case dataTooLarge
+  case noSuchAttr
+  case invalidItemRef
+  case invalidSearchRef
+  case noSuchClass
+  case noDefaultKeychain
+  case interactionNotAllowed
+  case readOnlyAttr
+  case wrongSecVersion
+  case keySizeNotAllowed
+  case noStorageModule
+  case noCertificateModule
+  case noPolicyModule
+  case interactionRequired
+  case dataNotAvailable
+  case dataNotModifiable
+  case createChainFailed
+  case invalidPrefsDomain
+  case inDarkWake
+  case aclNotSimple
+  case policyNotFound
+  case invalidTrustSetting
+  case noAccessForItem
+  case invalidOwnerEdit
+  case trustNotAvailable
+  case unsupportedFormat
+  case unknownFormat
+  case keyIsSensitive
+  case multiplePrivKeys
+  case passphraseRequired
+  case invalidPasswordRef
+  case invalidTrustSettings
+  case noTrustSettings
+  case pkcs12VerifyFailure
+  case invalidCertificate
+  case notSigner
+  case policyDenied
+  case invalidKey
+  case decode
+  case `internal`
+  case unsupportedAlgorithm
+  case unsupportedOperation
+  case unsupportedPadding
+  case itemInvalidKey
+  case itemInvalidKeyType
+  case itemInvalidValue
+  case itemClassMissing
+  case itemMatchUnsupported
+  case useItemListUnsupported
+  case useKeychainUnsupported
+  case useKeychainListUnsupported
+  case returnDataUnsupported
+  case returnAttributesUnsupported
+  case returnRefUnsupported
+  case returnPersitentRefUnsupported
+  case valueRefUnsupported
+  case valuePersistentRefUnsupported
+  case returnMissingPointer
+  case matchLimitUnsupported
+  case itemIllegalQuery
+  case waitForCallback
+  case missingEntitlement
+  case upgradePending
+  case mpSignatureInvalid
+  case otrTooOld
+  case otrIDTooNew
+  case serviceNotAvailable
+  case insufficientClientID
+  case deviceReset
+  case deviceFailed
+  case appleAddAppACLSubject
+  case applePublicKeyIncomplete
+  case appleSignatureMismatch
+  case appleInvalidKeyStartDate
+  case appleInvalidKeyEndDate
+  case conversionError
+  case appleSSLv2Rollback
+  case quotaExceeded
+  case fileTooBig
+  case invalidDatabaseBlob
+  case invalidKeyBlob
+  case incompatibleDatabaseBlob
+  case incompatibleKeyBlob
+  case hostNameMismatch
+  case unknownCriticalExtensionFlag
+  case noBasicConstraints
+  case noBasicConstraintsCA
+  case invalidAuthorityKeyID
+  case invalidSubjectKeyID
+  case invalidKeyUsageForPolicy
+  case invalidExtendedKeyUsage
+  case invalidIDLinkage
+  case pathLengthConstraintExceeded
+  case invalidRoot
+  case crlExpired
+  case crlNotValidYet
+  case crlNotFound
+  case crlServerDown
+  case crlBadURI
+  case unknownCertExtension
+  case unknownCRLExtension
+  case crlNotTrusted
+  case crlPolicyFailed
+  case idpFailure
+  case smimeEmailAddressesNotFound
+  case smimeBadExtendedKeyUsage
+  case smimeBadKeyUsage
+  case smimeKeyUsageNotCritical
+  case smimeNoEmailAddress
+  case smimeSubjAltNameNotCritical
+  case sslBadExtendedKeyUsage
+  case ocspBadResponse
+  case ocspBadRequest
+  case ocspUnavailable
+  case ocspStatusUnrecognized
+  case endOfData
+  case incompleteCertRevocationCheck
+  case networkFailure
+  case ocspNotTrustedToAnchor
+  case recordModified
+  case ocspSignatureError
+  case ocspNoSigner
+  case ocspResponderMalformedReq
+  case ocspResponderInternalError
+  case ocspResponderTryLater
+  case ocspResponderSignatureRequired
+  case ocspResponderUnauthorized
+  case ocspResponseNonceMismatch
+  case codeSigningBadCertChainLength
+  case codeSigningNoBasicConstraints
+  case codeSigningBadPathLengthConstraint
+  case codeSigningNoExtendedKeyUsage
+  case codeSigningDevelopment
+  case resourceSignBadCertChainLength
+  case resourceSignBadExtKeyUsage
+  case trustSettingDeny
+  case invalidSubjectName
+  case unknownQualifiedCertStatement
+  case mobileMeRequestQueued
+  case mobileMeRequestRedirected
+  case mobileMeServerError
+  case mobileMeServerNotAvailable
+  case mobileMeServerAlreadyExists
+  case mobileMeServerServiceErr
+  case mobileMeRequestAlreadyPending
+  case mobileMeNoRequestPending
+  case mobileMeCSRVerifyFailure
+  case mobileMeFailedConsistencyCheck
+  case notInitialized
+  case invalidHandleUsage
+  case pvcReferentNotFound
+  case functionIntegrityFail
+  case internalError
+  case memoryError
+  case invalidData
+  case mdsError
+  case invalidPointer
+  case selfCheckFailed
+  case functionFailed
+  case moduleManifestVerifyFailed
+  case invalidGUID
+  case invalidHandle
+  case invalidDBList
+  case invalidPassthroughID
+  case invalidNetworkAddress
+  case crlAlreadySigned
+  case invalidNumberOfFields
+  case verificationFailure
+  case unknownTag
+  case invalidSignature
+  case invalidName
+  case invalidCertificateRef
+  case invalidCertificateGroup
+  case tagNotFound
+  case invalidQuery
+  case invalidValue
+  case callbackFailed
+  case aclDeleteFailed
+  case aclReplaceFailed
+  case aclAddFailed
+  case aclChangeFailed
+  case invalidAccessCredentials
+  case invalidRecord
+  case invalidACL
+  case invalidSampleValue
+  case incompatibleVersion
+  case privilegeNotGranted
+  case invalidScope
+  case pvcAlreadyConfigured
+  case invalidPVC
+  case emmLoadFailed
+  case emmUnloadFailed
+  case addinLoadFailed
+  case invalidKeyRef
+  case invalidKeyHierarchy
+  case addinUnloadFailed
+  case libraryReferenceNotFound
+  case invalidAddinFunctionTable
+  case invalidServiceMask
+  case moduleNotLoaded
+  case invalidSubServiceID
+  case attributeNotInContext
+  case moduleManagerInitializeFailed
+  case moduleManagerNotFound
+  case eventNotificationCallbackNotFound
+  case inputLengthError
+  case outputLengthError
+  case privilegeNotSupported
+  case deviceError
+  case attachHandleBusy
+  case notLoggedIn
+  case algorithmMismatch
+  case keyUsageIncorrect
+  case keyBlobTypeIncorrect
+  case keyHeaderInconsistent
+  case unsupportedKeyFormat
+  case unsupportedKeySize
+  case invalidKeyUsageMask
+  case unsupportedKeyUsageMask
+  case invalidKeyAttributeMask
+  case unsupportedKeyAttributeMask
+  case invalidKeyLabel
+  case unsupportedKeyLabel
+  case invalidKeyFormat
+  case unsupportedVectorOfBuffers
+  case invalidInputVector
+  case invalidOutputVector
+  case invalidContext
+  case invalidAlgorithm
+  case invalidAttributeKey
+  case missingAttributeKey
+  case invalidAttributeInitVector
+  case missingAttributeInitVector
+  case invalidAttributeSalt
+  case missingAttributeSalt
+  case invalidAttributePadding
+  case missingAttributePadding
+  case invalidAttributeRandom
+  case missingAttributeRandom
+  case invalidAttributeSeed
+  case missingAttributeSeed
+  case invalidAttributePassphrase
+  case missingAttributePassphrase
+  case invalidAttributeKeyLength
+  case missingAttributeKeyLength
+  case invalidAttributeBlockSize
+  case missingAttributeBlockSize
+  case invalidAttributeOutputSize
+  case missingAttributeOutputSize
+  case invalidAttributeRounds
+  case missingAttributeRounds
+  case invalidAlgorithmParms
+  case missingAlgorithmParms
+  case invalidAttributeLabel
+  case missingAttributeLabel
+  case invalidAttributeKeyType
+  case missingAttributeKeyType
+  case invalidAttributeMode
+  case missingAttributeMode
+  case invalidAttributeEffectiveBits
+  case missingAttributeEffectiveBits
+  case invalidAttributeStartDate
+  case missingAttributeStartDate
+  case invalidAttributeEndDate
+  case missingAttributeEndDate
+  case invalidAttributeVersion
+  case missingAttributeVersion
+  case invalidAttributePrime
+  case missingAttributePrime
+  case invalidAttributeBase
+  case missingAttributeBase
+  case invalidAttributeSubprime
+  case missingAttributeSubprime
+  case invalidAttributeIterationCount
+  case missingAttributeIterationCount
+  case invalidAttributeDLDBHandle
+  case missingAttributeDLDBHandle
+  case invalidAttributeAccessCredentials
+  case missingAttributeAccessCredentials
+  case invalidAttributePublicKeyFormat
+  case missingAttributePublicKeyFormat
+  case invalidAttributePrivateKeyFormat
+  case missingAttributePrivateKeyFormat
+  case invalidAttributeSymmetricKeyFormat
+  case missingAttributeSymmetricKeyFormat
+  case invalidAttributeWrappedKeyFormat
+  case missingAttributeWrappedKeyFormat
+  case stagedOperationInProgress
+  case stagedOperationNotStarted
+  case verifyFailed
+  case querySizeUnknown
+  case blockSizeMismatch
+  case publicKeyInconsistent
+  case deviceVerifyFailed
+  case invalidLoginName
+  case alreadyLoggedIn
+  case invalidDigestAlgorithm
+  case invalidCRLGroup
+  case certificateCannotOperate
+  case certificateExpired
+  case certificateNotValidYet
+  case certificateRevoked
+  case certificateSuspended
+  case insufficientCredentials
+  case invalidAction
+  case invalidAuthority
+  case verifyActionFailed
+  case invalidCertAuthority
+  case invaldCRLAuthority
+  case invalidCRLEncoding
+  case invalidCRLType
+  case invalidCRL
+  case invalidFormType
+  case invalidID
+  case invalidIdentifier
+  case invalidIndex
+  case invalidPolicyIdentifiers
+  case invalidTimeString
+  case invalidReason
+  case invalidRequestInputs
+  case invalidResponseVector
+  case invalidStopOnPolicy
+  case invalidTuple
+  case multipleValuesUnsupported
+  case notTrusted
+  case noDefaultAuthority
+  case rejectedForm
+  case requestLost
+  case requestRejected
+  case unsupportedAddressType
+  case unsupportedService
+  case invalidTupleGroup
+  case invalidBaseACLs
+  case invalidTupleCredendtials
+  case invalidEncoding
+  case invalidValidityPeriod
+  case invalidRequestor
+  case requestDescriptor
+  case invalidBundleInfo
+  case invalidCRLIndex
+  case noFieldValues
+  case unsupportedFieldFormat
+  case unsupportedIndexInfo
+  case unsupportedLocality
+  case unsupportedNumAttributes
+  case unsupportedNumIndexes
+  case unsupportedNumRecordTypes
+  case fieldSpecifiedMultiple
+  case incompatibleFieldFormat
+  case invalidParsingModule
+  case databaseLocked
+  case datastoreIsOpen
+  case missingValue
+  case unsupportedQueryLimits
+  case unsupportedNumSelectionPreds
+  case unsupportedOperator
+  case invalidDBLocation
+  case invalidAccessRequest
+  case invalidIndexInfo
+  case invalidNewOwner
+  case invalidModifyMode
+  case missingRequiredExtension
+  case extendedKeyUsageNotCritical
+  case timestampMissing
+  case timestampInvalid
+  case timestampNotTrusted
+  case timestampServiceNotAvailable
+  case timestampBadAlg
+  case timestampBadRequest
+  case timestampBadDataFormat
+  case timestampTimeNotAvailable
+  case timestampUnacceptedPolicy
+  case timestampUnacceptedExtension
+  case timestampAddInfoNotAvailable
+  case timestampSystemFailure
+  case signingTimeMissing
+  case timestampRejection
+  case timestampWaiting
+  case timestampRevocationWarning
+  case timestampRevocationNotification
+  case unexpectedError
+}
+extension Status : Swift.RawRepresentable, Swift.CustomStringConvertible {
+  public init(status: Darwin.OSStatus)
+  public var description: Swift.String {
+    get
+  }
+  public typealias RawValue = Darwin.OSStatus
+  public init?(rawValue: Darwin.OSStatus)
+  public var rawValue: Darwin.OSStatus {
+    get
+  }
+}
+extension Status : Foundation.CustomNSError {
+  public static let errorDomain: Swift.String
+  public var errorCode: Swift.Int {
+    get
+  }
+  public var errorUserInfo: [Swift.String : Any] {
+    get
+  }
+}
+public class LoginManager {
+  public static let `default`: hhVDoctorSDK.LoginManager
+  public var mUUID: Swift.Int?
+  public func userName() -> Swift.String
+  public func convert2Model() -> Swift.String?
+  public func getUserInfo() -> hhVDoctorSDK.HHUserModel?
+  public func hasLoginData() -> Swift.Bool
+  public func getUserInfo(token: Swift.String, success: ((Swift.String?) -> Swift.Void)? = nil, fail: ((Swift.String) -> Swift.Void)? = nil)
+  public func getUserInfoRequest(success: ((Swift.String?) -> Swift.Void)? = nil, fail: ((Swift.String) -> Swift.Void)? = nil)
+  @objc deinit
+}
+final public class Map {
+  final public subscript(key: Swift.String) -> hhVDoctorSDK.Map {
+    get
+  }
+  final public subscript(key: Swift.String, delimiter delimiter: Swift.String) -> hhVDoctorSDK.Map {
+    get
+  }
+  final public subscript(key: Swift.String, nested nested: Swift.Bool) -> hhVDoctorSDK.Map {
+    get
+  }
+  final public subscript(key: Swift.String, nested nested: Swift.Bool, delimiter delimiter: Swift.String) -> hhVDoctorSDK.Map {
+    get
+  }
+  final public subscript(key: Swift.String, ignoreNil ignoreNil: Swift.Bool) -> hhVDoctorSDK.Map {
+    get
+  }
+  final public subscript(key: Swift.String, delimiter delimiter: Swift.String, ignoreNil ignoreNil: Swift.Bool) -> hhVDoctorSDK.Map {
+    get
+  }
+  final public subscript(key: Swift.String, nested nested: Swift.Bool, ignoreNil ignoreNil: Swift.Bool) -> hhVDoctorSDK.Map {
+    get
+  }
+  final public subscript(key: Swift.String, nested nested: Swift.Bool?, delimiter delimiter: Swift.String, ignoreNil ignoreNil: Swift.Bool) -> hhVDoctorSDK.Map {
+    get
+  }
+  @objc deinit
+}
+public protocol BaseMappable {
+  mutating func mapping(map: hhVDoctorSDK.Map)
+}
+public protocol Mappable : hhVDoctorSDK.BaseMappable {
+  init?(map: hhVDoctorSDK.Map)
+}
+final public class MD5 {
+  public init()
+  final public func calculate(for bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
+  @objc deinit
+}
+extension MD5 : hhVDoctorSDK.Updatable {
+  final public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
+}
+public protocol SDKRequest : hhVDoctorSDK.HHRequestConfig {
+}
+infix operator <- : DefaultPrecedence
+infix operator >>> : DefaultPrecedence
+public func <- <T>(left: inout T, right: hhVDoctorSDK.Map)
+public func >>> <T>(left: T, right: hhVDoctorSDK.Map)
+public func <- <T>(left: inout T?, right: hhVDoctorSDK.Map)
+public func >>> <T>(left: T?, right: hhVDoctorSDK.Map)
+public func <- <T>(left: inout T, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func >>> <T>(left: T, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func <- <T>(left: inout T?, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func >>> <T>(left: T?, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func <- <T>(left: inout Swift.Dictionary<Swift.String, T>, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func >>> <T>(left: Swift.Dictionary<Swift.String, T>, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func <- <T>(left: inout Swift.Dictionary<Swift.String, T>?, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func >>> <T>(left: Swift.Dictionary<Swift.String, T>?, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func <- <T>(left: inout Swift.Dictionary<Swift.String, [T]>, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func >>> <T>(left: Swift.Dictionary<Swift.String, [T]>, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func <- <T>(left: inout Swift.Dictionary<Swift.String, [T]>?, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func >>> <T>(left: Swift.Dictionary<Swift.String, [T]>?, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func <- <T>(left: inout Swift.Array<T>, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func >>> <T>(left: Swift.Array<T>, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func <- <T>(left: inout Swift.Array<T>?, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func >>> <T>(left: Swift.Array<T>?, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func <- <T>(left: inout Swift.Array<Swift.Array<T>>, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func >>> <T>(left: Swift.Array<Swift.Array<T>>, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func <- <T>(left: inout Swift.Array<Swift.Array<T>>?, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func >>> <T>(left: Swift.Array<Swift.Array<T>>?, right: hhVDoctorSDK.Map) where T : hhVDoctorSDK.BaseMappable
+public func <- <T>(left: inout Swift.Set<T>, right: hhVDoctorSDK.Map) where T : Swift.Hashable, T : hhVDoctorSDK.BaseMappable
+public func >>> <T>(left: Swift.Set<T>, right: hhVDoctorSDK.Map) where T : Swift.Hashable, T : hhVDoctorSDK.BaseMappable
+public func <- <T>(left: inout Swift.Set<T>?, right: hhVDoctorSDK.Map) where T : Swift.Hashable, T : hhVDoctorSDK.BaseMappable
+public func >>> <T>(left: Swift.Set<T>?, right: hhVDoctorSDK.Map) where T : Swift.Hashable, T : hhVDoctorSDK.BaseMappable
+public protocol PaddingProtocol {
+  func add(to: Swift.Array<Swift.UInt8>, blockSize: Swift.Int) -> Swift.Array<Swift.UInt8>
+  func remove(from: Swift.Array<Swift.UInt8>, blockSize: Swift.Int?) -> Swift.Array<Swift.UInt8>
+}
+public enum Padding : hhVDoctorSDK.PaddingProtocol {
+  case noPadding, zeroPadding, pkcs7, pkcs5
+  public func add(to: Swift.Array<Swift.UInt8>, blockSize: Swift.Int) -> Swift.Array<Swift.UInt8>
+  public func remove(from: Swift.Array<Swift.UInt8>, blockSize: Swift.Int?) -> Swift.Array<Swift.UInt8>
+  public static func == (a: hhVDoctorSDK.Padding, b: hhVDoctorSDK.Padding) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+}
+extension PKCS5 {
+  public struct PBKDF1 {
+    public enum Error : Swift.Error {
+      case invalidInput
+      case derivedKeyTooLong
+      public static func == (a: hhVDoctorSDK.PKCS5.PBKDF1.Error, b: hhVDoctorSDK.PKCS5.PBKDF1.Error) -> Swift.Bool
+      public var hashValue: Swift.Int {
+        get
+      }
+      public func hash(into hasher: inout Swift.Hasher)
+    }
+    public enum Variant {
+      case md5, sha1
+      public static func == (a: hhVDoctorSDK.PKCS5.PBKDF1.Variant, b: hhVDoctorSDK.PKCS5.PBKDF1.Variant) -> Swift.Bool
+      public var hashValue: Swift.Int {
+        get
+      }
+      public func hash(into hasher: inout Swift.Hasher)
+    }
+    public init(password: Swift.Array<Swift.UInt8>, salt: Swift.Array<Swift.UInt8>, variant: hhVDoctorSDK.PKCS5.PBKDF1.Variant = .sha1, iterations: Swift.Int = 4096, keyLength: Swift.Int? = nil) throws
+    public func calculate() -> Swift.Array<Swift.UInt8>
+  }
+}
+extension PKCS5 {
+  public struct PBKDF2 {
+    public enum Error : Swift.Error {
+      case invalidInput
+      case derivedKeyTooLong
+      public static func == (a: hhVDoctorSDK.PKCS5.PBKDF2.Error, b: hhVDoctorSDK.PKCS5.PBKDF2.Error) -> Swift.Bool
+      public var hashValue: Swift.Int {
+        get
+      }
+      public func hash(into hasher: inout Swift.Hasher)
+    }
+    public init(password: Swift.Array<Swift.UInt8>, salt: Swift.Array<Swift.UInt8>, iterations: Swift.Int = 4096, keyLength: Swift.Int? = nil, variant: hhVDoctorSDK.HMAC.Variant = .sha256) throws
+    public func calculate() throws -> Swift.Array<Swift.UInt8>
+  }
+}
+@objc public enum PermissionType : Swift.Int {
+  case locationAlways
+  case locationWhenInUse
+  case microphone
+  case camera
+  case photos
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+extension PermissionType : Swift.CustomStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+}
+public class PhotoPicker {
+  public static func openCamera(config: hhVDoctorSDK.HHCameraConfig, capFinished: hhVDoctorSDK.onCapFinished? = nil)
+  public static func reduceImages(paths: [Swift.String], finished: @escaping (([Swift.String]) -> Swift.Void))
+  public class func changeAvatar(vc: UIKit.UIViewController, reference: UIKit.UIView? = nil, uuid: Swift.Int, imgClosure: @escaping (UIKit.UIImage) -> Swift.Void, keyClosure: @escaping (Swift.String) -> Swift.Void)
+  @objc deinit
+}
+extension PhotoPicker {
+  public static func checkPermisstion(_ type: hhVDoctorSDK.PermissionType, authorized: (() -> Swift.Void)?, others: ((hhVDoctorSDK.PermissionType) -> Swift.Void)?)
+  public static func converSize(_ size: CoreGraphics.CGSize) -> CoreGraphics.CGSize
+}
+public class PhotoPickerConfig {
+  public static let `default`: hhVDoctorSDK.PhotoPickerConfig
+  public var miniPicTip: Swift.Bool
+  public var mMaxSelectCount: Swift.Int
+  public var mDetailColumnCount: Swift.Int
+  @objc deinit
+}
+public enum PKCS5 {
+}
+public enum PKCS7 {
+}
+final public class Poly1305 : hhVDoctorSDK.Authenticator {
+  public enum Error : Swift.Error {
+    case authenticateError
+    public static func == (a: hhVDoctorSDK.Poly1305.Error, b: hhVDoctorSDK.Poly1305.Error) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public static let blockSize: Swift.Int
+  public init(key: Swift.Array<Swift.UInt8>)
+  final public func authenticate(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  @objc deinit
+}
+extension Rabbit {
+  convenience public init(key: Swift.String) throws
+  convenience public init(key: Swift.String, iv: Swift.String) throws
+}
+final public class Rabbit {
+  public enum Error : Swift.Error {
+    case invalidKeyOrInitializationVector
+    public static func == (a: hhVDoctorSDK.Rabbit.Error, b: hhVDoctorSDK.Rabbit.Error) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public static let ivSize: Swift.Int
+  public static let keySize: Swift.Int
+  public static let blockSize: Swift.Int
+  final public var keySize: Swift.Int {
+    get
+  }
+  convenience public init(key: Swift.Array<Swift.UInt8>) throws
+  public init(key: Swift.Array<Swift.UInt8>, iv: Swift.Array<Swift.UInt8>?) throws
+  @objc deinit
+}
+extension Rabbit : hhVDoctorSDK.Cipher {
+  final public func encrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  final public func decrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+}
+public protocol RandomAccessCryptor : hhVDoctorSDK.Updatable {
+  @discardableResult
+  mutating func seek(to: Swift.Int) -> Swift.Bool
+}
+public enum ReachabilityError : Swift.Error {
+  case FailedToCreateWithAddress(Darwin.sockaddr_in)
+  case FailedToCreateWithHostname(Swift.String)
+  case UnableToSetCallback
+  case UnableToSetDispatchQueue
+}
+public let ReachabilityChangedNotification: Foundation.NSNotification.Name
+public class Reachability {
+  public typealias NetworkReachable = (hhVDoctorSDK.Reachability) -> ()
+  public typealias NetworkUnreachable = (hhVDoctorSDK.Reachability) -> ()
+  public enum NetworkStatus : Swift.CustomStringConvertible {
+    case notReachable, reachableViaWiFi, reachableViaWWAN
+    public var description: Swift.String {
+      get
+    }
+    public static func == (a: hhVDoctorSDK.Reachability.NetworkStatus, b: hhVDoctorSDK.Reachability.NetworkStatus) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public var whenReachable: hhVDoctorSDK.Reachability.NetworkReachable?
+  public var whenUnreachable: hhVDoctorSDK.Reachability.NetworkUnreachable?
+  public var reachableOnWWAN: Swift.Bool
+  public var currentReachabilityString: Swift.String {
+    get
+  }
+  public var currentReachabilityStatus: hhVDoctorSDK.Reachability.NetworkStatus {
+    get
+  }
+  required public init(reachabilityRef: SystemConfiguration.SCNetworkReachability)
+  convenience public init?(hostname: Swift.String)
+  convenience public init?()
+  @objc deinit
+}
+extension Reachability {
+  public func startNotifier() throws
+  public func stopNotifier()
+  public var isReachable: Swift.Bool {
+    get
+  }
+  public var isReachableViaWWAN: Swift.Bool {
+    get
+  }
+  public var isReachableViaWiFi: Swift.Bool {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+}
+final public class SHA1 {
+  public init()
+  final public func calculate(for bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
+  @objc deinit
+}
+extension SHA1 : hhVDoctorSDK.Updatable {
+  @discardableResult
+  final public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
+}
+final public class SHA2 {
+  public enum Variant : Swift.RawRepresentable {
+    case sha224, sha256, sha384, sha512
+    public var digestLength: Swift.Int {
+      get
+    }
+    public var blockSize: Swift.Int {
+      get
+    }
+    public typealias RawValue = Swift.Int
+    public var rawValue: hhVDoctorSDK.SHA2.Variant.RawValue {
+      get
+    }
+    public init?(rawValue: hhVDoctorSDK.SHA2.Variant.RawValue)
+  }
+  public init(variant: hhVDoctorSDK.SHA2.Variant)
+  final public func calculate(for bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
+  @objc deinit
+}
+extension SHA2 : hhVDoctorSDK.Updatable {
+  final public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
+}
+final public class SHA3 {
+  final public let blockSize: Swift.Int
+  final public let digestLength: Swift.Int
+  final public let markByte: Swift.UInt8
+  public enum Variant {
+    case sha224, sha256, sha384, sha512, keccak224, keccak256, keccak384, keccak512
+    public var outputLength: Swift.Int {
+      get
+    }
+    public static func == (a: hhVDoctorSDK.SHA3.Variant, b: hhVDoctorSDK.SHA3.Variant) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public init(variant: hhVDoctorSDK.SHA3.Variant)
+  final public func calculate(for bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
+  @objc deinit
+}
+extension SHA3 : hhVDoctorSDK.Updatable {
+  final public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
+}
+extension String {
+  public var bytes: Swift.Array<Swift.UInt8> {
+    get
+  }
+  public func md5() -> Swift.String
+  public func sha1() -> Swift.String
+  public func sha224() -> Swift.String
+  public func sha256() -> Swift.String
+  public func sha384() -> Swift.String
+  public func sha512() -> Swift.String
+  public func sha3(_ variant: hhVDoctorSDK.SHA3.Variant) -> Swift.String
+  public func crc32(seed: Swift.UInt32? = nil, reflect: Swift.Bool = true) -> Swift.String
+  public func crc16(seed: Swift.UInt16? = nil) -> Swift.String
+  public func encrypt(cipher: hhVDoctorSDK.Cipher) throws -> Swift.String
+  public func encryptToBase64(cipher: hhVDoctorSDK.Cipher) throws -> Swift.String?
+  public func authenticate<A>(with authenticator: A) throws -> Swift.String where A : hhVDoctorSDK.Authenticator
+}
+extension String {
+  public func decryptBase64ToString(cipher: hhVDoctorSDK.Cipher) throws -> Swift.String
+  public func decryptBase64(cipher: hhVDoctorSDK.Cipher) throws -> Swift.Array<Swift.UInt8>
+}
+public enum hhToastPosition {
+  case top
+  case center
+  case bottom
+  public static func == (a: hhVDoctorSDK.hhToastPosition, b: hhVDoctorSDK.hhToastPosition) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+}
+extension UIView {
+  public func hhmakeToast(_ message: Swift.String)
+  public func hhmakeToast(_ message: Swift.String, duration: Foundation.TimeInterval, position: hhVDoctorSDK.hhToastPosition)
+  public func hhmakeToast(_ message: Swift.String, duration: Foundation.TimeInterval, position: CoreGraphics.CGPoint)
+  public func hhmakeToast(_ message: Swift.String, duration: Foundation.TimeInterval, position: hhVDoctorSDK.hhToastPosition, style: hhVDoctorSDK.hhToastStyle?)
+  public func hhmakeToast(_ message: Swift.String, duration: Foundation.TimeInterval, position: CoreGraphics.CGPoint, style: hhVDoctorSDK.hhToastStyle?)
+  public func hhmakeToast(_ message: Swift.String?, duration: Foundation.TimeInterval, position: hhVDoctorSDK.hhToastPosition, title: Swift.String?, image: UIKit.UIImage?, style: hhVDoctorSDK.hhToastStyle?, completion: ((Swift.Bool) -> Swift.Void)?)
+  public func hhmakeToast(_ message: Swift.String?, duration: Foundation.TimeInterval, position: CoreGraphics.CGPoint, title: Swift.String?, image: UIKit.UIImage?, style: hhVDoctorSDK.hhToastStyle?, completion: ((Swift.Bool) -> Swift.Void)?)
+  public func hhshowToast(_ toast: UIKit.UIView)
+  public func hhshowToast(_ toast: UIKit.UIView, duration: Foundation.TimeInterval, position: hhVDoctorSDK.hhToastPosition, completion: ((Swift.Bool) -> Swift.Void)?)
+  public func hhshowToast(_ toast: UIKit.UIView, duration: Foundation.TimeInterval, position: CoreGraphics.CGPoint, completion: ((Swift.Bool) -> Swift.Void)?)
+  public func hhmakeToastActivity(_ position: hhVDoctorSDK.hhToastPosition)
+  public func hhmakeToastActivity(_ position: CoreGraphics.CGPoint)
+  public func hhhideToastActivity()
+  @objc dynamic public func hhhandleToastTapped(_ recognizer: UIKit.UITapGestureRecognizer)
+  @objc dynamic public func hhtoastTimerDidFinish(_ timer: Foundation.Timer)
+  public func hhtoastViewForMessage(_ message: Swift.String?, title: Swift.String?, image: UIKit.UIImage?, style: hhVDoctorSDK.hhToastStyle) throws -> UIKit.UIView
+}
+public struct hhToastStyle {
+  public init()
+  public var backgroundColor: UIKit.UIColor
+  public var titleColor: UIKit.UIColor
+  public var messageColor: UIKit.UIColor
+  public var maxWidthPercentage: CoreGraphics.CGFloat {
+    get
+    set
+  }
+  public var maxHeightPercentage: CoreGraphics.CGFloat {
+    get
+    set
+  }
+  public var horizontalPadding: CoreGraphics.CGFloat
+  public var verticalPadding: CoreGraphics.CGFloat
+  public var cornerRadius: CoreGraphics.CGFloat
+  public var titleFont: UIKit.UIFont
+  public var messageFont: UIKit.UIFont
+  public var titleAlignment: UIKit.NSTextAlignment
+  public var messageAlignment: UIKit.NSTextAlignment
+  public var titleNumberOfLines: Swift.Int
+  public var messageNumberOfLines: Swift.Int
+  public var displayShadow: Swift.Bool
+  public var shadowColor: UIKit.UIColor
+  public var shadowOpacity: Swift.Float {
+    get
+    set
+  }
+  public var shadowRadius: CoreGraphics.CGFloat
+  public var shadowOffset: CoreGraphics.CGSize
+  public var imageSize: CoreGraphics.CGSize
+  public var activitySize: CoreGraphics.CGSize
+  public var fadeDuration: Foundation.TimeInterval
+}
+public func <- <Transform>(left: inout Transform.Object, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func >>> <Transform>(left: Transform.Object, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func <- <Transform>(left: inout Transform.Object?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func >>> <Transform>(left: Transform.Object?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func <- <Transform>(left: inout [Transform.Object], right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func >>> <Transform>(left: [Transform.Object], right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func <- <Transform>(left: inout [Transform.Object]?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func >>> <Transform>(left: [Transform.Object]?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func <- <Transform>(left: inout [Swift.String : Transform.Object], right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func >>> <Transform>(left: [Swift.String : Transform.Object], right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func <- <Transform>(left: inout [Swift.String : Transform.Object]?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func >>> <Transform>(left: [Swift.String : Transform.Object]?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func <- <Transform>(left: inout Transform.Object, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func >>> <Transform>(left: Transform.Object, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func <- <Transform>(left: inout Transform.Object?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func <- <Transform>(left: inout Swift.Dictionary<Swift.String, Transform.Object>, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func >>> <Transform>(left: Swift.Dictionary<Swift.String, Transform.Object>, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func <- <Transform>(left: inout Swift.Dictionary<Swift.String, Transform.Object>?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func >>> <Transform>(left: Swift.Dictionary<Swift.String, Transform.Object>?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func <- <Transform>(left: inout Swift.Dictionary<Swift.String, [Transform.Object]>, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func >>> <Transform>(left: Swift.Dictionary<Swift.String, [Transform.Object]>, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func <- <Transform>(left: inout Swift.Dictionary<Swift.String, [Transform.Object]>?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func >>> <Transform>(left: Swift.Dictionary<Swift.String, [Transform.Object]>?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func <- <Transform>(left: inout Swift.Array<Transform.Object>, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func >>> <Transform>(left: Swift.Array<Transform.Object>, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func <- <Transform>(left: inout Swift.Array<Transform.Object>?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func >>> <Transform>(left: Swift.Array<Transform.Object>?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : hhVDoctorSDK.BaseMappable
+public func <- <Transform>(left: inout [[Transform.Object]], right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func >>> <Transform>(left: [[Transform.Object]], right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func <- <Transform>(left: inout [[Transform.Object]]?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func >>> <Transform>(left: [[Transform.Object]]?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
+public func <- <Transform>(left: inout Swift.Set<Transform.Object>, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : Swift.Hashable, Transform.Object : hhVDoctorSDK.BaseMappable
+public func >>> <Transform>(left: Swift.Set<Transform.Object>, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : Swift.Hashable, Transform.Object : hhVDoctorSDK.BaseMappable
+public func <- <Transform>(left: inout Swift.Set<Transform.Object>?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : Swift.Hashable, Transform.Object : hhVDoctorSDK.BaseMappable
+public func >>> <Transform>(left: Swift.Set<Transform.Object>?, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType, Transform.Object : Swift.Hashable, Transform.Object : hhVDoctorSDK.BaseMappable
+public protocol TransformType {
+  associatedtype Object
+  associatedtype JSON
+  func transformFromJSON(_ value: Any?) -> Self.Object?
+  func transformToJSON(_ value: Self.Object?) -> Self.JSON?
+}
+@objc public class TRTCManager : ObjectiveC.NSObject {
+  public static let `default`: hhVDoctorSDK.TRTCManager
+  @objc deinit
+}
+extension TRTCManager {
+  public func isLogined() -> Swift.Bool
+  public func login(complete: @escaping hhVDoctorSDK.HHLoginHandler)
+}
+extension TRTCManager : ImSDK.TIMMessageListener {
+  @objc dynamic public func onNewMessage(_ msgs: [Any]!)
+}
+extension TRTCManager : ImSDK.TIMConnListener {
+  @objc dynamic public func onConnSucc()
+  @objc dynamic public func onConnFailed(_ code: Swift.Int32, err: Swift.String!)
+  @objc dynamic public func onDisconnect(_ code: Swift.Int32, err: Swift.String!)
+}
+extension TRTCManager : TXLiteAVSDK_TRTC.TRTCCloudDelegate {
+  @objc dynamic public func onEnterRoom(_ result: Swift.Int)
+  @objc dynamic public func onError(_ errCode: TXLiteAVSDK_TRTC.TXLiteAVError, errMsg: Swift.String?, extInfo: [Swift.AnyHashable : Any]?)
+}
+extension TRTCManager : TXLiteAVSDK_TRTC.TRTCLogDelegate {
+  @objc dynamic public func onLog(_ log: Swift.String?, logLevel level: TXLiteAVSDK_TRTC.TRTCLogLevel, whichModule module: Swift.String?)
+}
+extension TRTCManager : ImSDK.TIMUserStatusListener {
+  @objc dynamic public func onForceOffline()
+  @objc dynamic public func onReConnFailed(_ code: Swift.Int32, err: Swift.String!)
+  @objc dynamic public func onUserSigExpired()
+}
+extension String {
+  public func subFrom(_ index: Swift.Int) -> Swift.String
+}
+public protocol _UInt8Type {
+}
+extension UInt8 : hhVDoctorSDK._UInt8Type {
+}
+extension UInt8 {
+  public func bits() -> [hhVDoctorSDK.Bit]
+  public func bits() -> Swift.String
+}
+public protocol Updatable {
+  mutating func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool) throws -> Swift.Array<Swift.UInt8>
+  mutating func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+  mutating func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  mutating func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+}
+extension Updatable {
+  mutating public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+  @discardableResult
+  mutating public func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  @discardableResult
+  mutating public func finish() throws -> Swift.Array<Swift.UInt8>
+  mutating public func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+  mutating public func finish(output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+}
+extension Updatable {
+  @discardableResult
+  mutating public func update(withBytes bytes: Swift.Array<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
+  mutating public func update(withBytes bytes: Swift.Array<Swift.UInt8>, isLast: Swift.Bool = false, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+  @discardableResult
+  mutating public func finish(withBytes bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  mutating public func finish(withBytes bytes: Swift.Array<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+}
+public typealias onProgress = ((CoreGraphics.CGFloat, Swift.String) -> Swift.Void)
+public typealias onUploadOnce = ((Swift.Bool, hhVDoctorSDK.HHUploadModel) -> Swift.Void)
+public typealias onFinished = (() -> Swift.Void)
+public class HHUploadConfig {
+  public var progress: hhVDoctorSDK.onProgress?
+  public var uploadOnce: hhVDoctorSDK.onUploadOnce?
+  public var finished: hhVDoctorSDK.onFinished?
+  public var orderId: Swift.String?
+  public init()
+  @objc deinit
+}
+public class HHUploadModel {
+  public var clouldKey: Swift.String?
+  public var filePath: Swift.String? {
+    get
+    set
+  }
+  public var smallImage: Swift.String
+  public var state: hhVDoctorSDK.UploadState?
+  public init()
+  public init(full: Swift.String?, scale: Swift.String)
+  public init(clouldKey: Swift.String?, filePath: Swift.String?, uploadTime: Foundation.TimeInterval?, name: Swift.String?, smallImage: Swift.String)
+  @objc deinit
+}
+public class UploadState {
+  public var file: Swift.String?
+  public var isSelect: Swift.Bool
+  public var changed: (() -> Swift.Void)?
+  public var progress: Swift.Float {
+    get
+    set
+  }
+  public func isSuccess() -> Swift.Bool
+  public func isFail() -> Swift.Bool
+  @objc deinit
+}
+public class WeakArray<T> {
+  public func add(_ delegate: T)
+  public func remove(_ delegate: T)
+  public func excute(_ block: @escaping ((T?) -> Swift.Void))
+  @objc deinit
+}
+extension hhVDoctorSDK.AES.Error : Swift.Equatable {}
+extension hhVDoctorSDK.AES.Error : Swift.Hashable {}
+extension hhVDoctorSDK.AES.Variant : Swift.Equatable {}
+extension hhVDoctorSDK.AES.Variant : Swift.Hashable {}
+extension hhVDoctorSDK.AES.Variant : Swift.RawRepresentable {}
+extension hhVDoctorSDK.Bit : Swift.Equatable {}
+extension hhVDoctorSDK.Bit : Swift.Hashable {}
+extension hhVDoctorSDK.Bit : Swift.RawRepresentable {}
+extension hhVDoctorSDK.BlockMode.Error : Swift.Equatable {}
+extension hhVDoctorSDK.BlockMode.Error : Swift.Hashable {}
+extension hhVDoctorSDK.Blowfish.Error : Swift.Equatable {}
+extension hhVDoctorSDK.Blowfish.Error : Swift.Hashable {}
+extension hhVDoctorSDK.ChaCha20.Error : Swift.Equatable {}
+extension hhVDoctorSDK.ChaCha20.Error : Swift.Hashable {}
+extension hhVDoctorSDK.CipherError : Swift.Equatable {}
+extension hhVDoctorSDK.CipherError : Swift.Hashable {}
+extension hhVDoctorSDK.CMAC.Error : Swift.Equatable {}
+extension hhVDoctorSDK.CMAC.Error : Swift.Hashable {}
+extension hhVDoctorSDK.DGElasticPullToRefreshState : Swift.Equatable {}
+extension hhVDoctorSDK.DGElasticPullToRefreshState : Swift.Hashable {}
+extension hhVDoctorSDK.DGElasticPullToRefreshState : Swift.RawRepresentable {}
+extension hhVDoctorSDK.HHMediaType : Swift.Equatable {}
+extension hhVDoctorSDK.HHMediaType : Swift.Hashable {}
+extension hhVDoctorSDK.HHMediaType : Swift.RawRepresentable {}
+extension hhVDoctorSDK.DateFormat : Swift.Equatable {}
+extension hhVDoctorSDK.DateFormat : Swift.Hashable {}
+extension hhVDoctorSDK.DateFormat : Swift.RawRepresentable {}
+extension hhVDoctorSDK.HHFileCacheManager.HHAssetPathType : Swift.Equatable {}
+extension hhVDoctorSDK.HHFileCacheManager.HHAssetPathType : Swift.Hashable {}
+extension hhVDoctorSDK.HHLogMode : Swift.Equatable {}
+extension hhVDoctorSDK.HHLogMode : Swift.Hashable {}
+extension hhVDoctorSDK.HHLogMode : Swift.RawRepresentable {}
+extension hhVDoctorSDK.HHMLoginCode : Swift.Equatable {}
+extension hhVDoctorSDK.HHMLoginCode : Swift.Hashable {}
+extension hhVDoctorSDK.HHMLoginCode : Swift.RawRepresentable {}
+extension hhVDoctorSDK.SkipType : Swift.Equatable {}
+extension hhVDoctorSDK.SkipType : Swift.Hashable {}
+extension hhVDoctorSDK.SkipType : Swift.RawRepresentable {}
+extension hhVDoctorSDK.HHCallType : Swift.Equatable {}
+extension hhVDoctorSDK.HHCallType : Swift.Hashable {}
+extension hhVDoctorSDK.HHCallType : Swift.RawRepresentable {}
+extension hhVDoctorSDK.HHMCallingState : Swift.Equatable {}
+extension hhVDoctorSDK.HHMCallingState : Swift.Hashable {}
+extension hhVDoctorSDK.HHMCallingState : Swift.RawRepresentable {}
+extension hhVDoctorSDK.HHRequestMethod : Swift.Equatable {}
+extension hhVDoctorSDK.HHRequestMethod : Swift.Hashable {}
+extension hhVDoctorSDK.HHServerType : Swift.Equatable {}
+extension hhVDoctorSDK.HHServerType : Swift.Hashable {}
+extension hhVDoctorSDK.HHPagerViewTransformerType : Swift.Equatable {}
+extension hhVDoctorSDK.HHPagerViewTransformerType : Swift.Hashable {}
+extension hhVDoctorSDK.HHPagerViewTransformerType : Swift.RawRepresentable {}
+extension hhVDoctorSDK.HKDF.Error : Swift.Equatable {}
+extension hhVDoctorSDK.HKDF.Error : Swift.Hashable {}
+extension hhVDoctorSDK.HMAC.Error : Swift.Equatable {}
+extension hhVDoctorSDK.HMAC.Error : Swift.Hashable {}
+extension hhVDoctorSDK.HMAC.Variant : Swift.Equatable {}
+extension hhVDoctorSDK.HMAC.Variant : Swift.Hashable {}
+extension hhVDoctorSDK.ItemClass : Swift.Equatable {}
+extension hhVDoctorSDK.ItemClass : Swift.Hashable {}
+extension hhVDoctorSDK.ProtocolType : Swift.Equatable {}
+extension hhVDoctorSDK.ProtocolType : Swift.Hashable {}
+extension hhVDoctorSDK.AuthenticationType : Swift.Equatable {}
+extension hhVDoctorSDK.AuthenticationType : Swift.Hashable {}
+extension hhVDoctorSDK.Accessibility : Swift.Equatable {}
+extension hhVDoctorSDK.Accessibility : Swift.Hashable {}
+extension hhVDoctorSDK.Status : Swift.Equatable {}
+extension hhVDoctorSDK.Status : Swift.Hashable {}
+extension hhVDoctorSDK.Padding : Swift.Equatable {}
+extension hhVDoctorSDK.Padding : Swift.Hashable {}
+extension hhVDoctorSDK.PKCS5.PBKDF1.Error : Swift.Equatable {}
+extension hhVDoctorSDK.PKCS5.PBKDF1.Error : Swift.Hashable {}
+extension hhVDoctorSDK.PKCS5.PBKDF1.Variant : Swift.Equatable {}
+extension hhVDoctorSDK.PKCS5.PBKDF1.Variant : Swift.Hashable {}
+extension hhVDoctorSDK.PKCS5.PBKDF2.Error : Swift.Equatable {}
+extension hhVDoctorSDK.PKCS5.PBKDF2.Error : Swift.Hashable {}
+extension hhVDoctorSDK.PermissionType : Swift.Equatable {}
+extension hhVDoctorSDK.PermissionType : Swift.Hashable {}
+extension hhVDoctorSDK.PermissionType : Swift.RawRepresentable {}
+extension hhVDoctorSDK.Poly1305.Error : Swift.Equatable {}
+extension hhVDoctorSDK.Poly1305.Error : Swift.Hashable {}
+extension hhVDoctorSDK.Rabbit.Error : Swift.Equatable {}
+extension hhVDoctorSDK.Rabbit.Error : Swift.Hashable {}
+extension hhVDoctorSDK.Reachability.NetworkStatus : Swift.Hashable {}
+extension hhVDoctorSDK.SHA2.Variant : Swift.Equatable {}
+extension hhVDoctorSDK.SHA2.Variant : Swift.Hashable {}
+extension hhVDoctorSDK.SHA3.Variant : Swift.Equatable {}
+extension hhVDoctorSDK.SHA3.Variant : Swift.Hashable {}
+extension hhVDoctorSDK.hhToastPosition : Swift.Equatable {}
+extension hhVDoctorSDK.hhToastPosition : Swift.Hashable {}
