@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name         = "HH_TRTC_Mini"
-    s.version      = "3.0.8.010611"
+    s.version      = "3.0.8.010614"
     s.summary      = "和缓视频医生 SDK"
 
     s.description  = <<-DESC
