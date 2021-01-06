@@ -1,8 +1,8 @@
-# git status
-# git add .
-# git commit -m "sdk upgrade"
-# git pull
-# git push
+git status
+git add .
+git commit -m "sdk upgrade"
+git pull
+git push
 
 echo '---------------------'
 echo 'feature/rescue'
