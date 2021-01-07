@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name         = "HH_TRTC_Mini"
-    s.version      = "3.0.8.010712"
+    s.version      = "3.0.8.010713"
     s.summary      = "和缓视频医生 SDK"
 
     s.description  = <<-DESC
@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
     s.source       = { :git => "https://github.com/HHMedic/HH_TRTC_Mini.git" }
     s.default_subspec = 'Base'
 
-    s.dependency 'TXIMSDK_iOS'
+    s.dependency 'TXIMSDK_Smart_iOS'
 
     s.subspec 'Base' do |base|
         base.vendored_frameworks = 'HH_TRTC_Mini/*.framework'
