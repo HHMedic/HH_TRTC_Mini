@@ -184,7 +184,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 @import CoreGraphics;
 @import CoreLocation;
 @import Foundation;
-@import ImSDK;
+@import ImSDK_Smart;
 @import ObjectiveC;
 @import Photos;
 @import QuartzCore;
@@ -687,25 +687,20 @@ SWIFT_CLASS("_TtC12hhVDoctorSDK11TRTCManager")
 
 
 
-@interface TRTCManager (SWIFT_EXTENSION(hhVDoctorSDK)) <TIMConnListener>
-- (void)onConnSucc;
-- (void)onConnFailed:(int32_t)code err:(NSString * _Null_unspecified)err;
-- (void)onDisconnect:(int32_t)code err:(NSString * _Null_unspecified)err;
-@end
 
 
-@interface TRTCManager (SWIFT_EXTENSION(hhVDoctorSDK)) <TIMUserStatusListener>
-- (void)onForceOffline;
-- (void)onReConnFailed:(int32_t)code err:(NSString * _Null_unspecified)err;
+@interface TRTCManager (SWIFT_EXTENSION(hhVDoctorSDK)) <V2TIMSDKListener>
+- (void)onConnectSuccess;
+- (void)onConnectFailed:(int32_t)code err:(NSString * _Null_unspecified)err;
+- (void)onKickedOffline;
 - (void)onUserSigExpired;
 @end
 
+@class V2TIMMessage;
 
-@interface TRTCManager (SWIFT_EXTENSION(hhVDoctorSDK)) <TIMMessageListener>
-- (void)onNewMessage:(NSArray * _Null_unspecified)msgs;
+@interface TRTCManager (SWIFT_EXTENSION(hhVDoctorSDK)) <V2TIMAdvancedMsgListener>
+- (void)onRecvNewMessage:(V2TIMMessage * _Null_unspecified)msg;
 @end
-
-
 
 
 

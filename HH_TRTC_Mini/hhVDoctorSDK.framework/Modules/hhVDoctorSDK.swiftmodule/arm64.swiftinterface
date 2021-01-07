@@ -9,7 +9,7 @@ import CoreTelephony
 import Darwin
 import Dispatch
 import Foundation
-import ImSDK
+import ImSDK_Smart
 import MobileCoreServices
 import ObjectiveC
 import Photos
@@ -19,11 +19,65 @@ import TXLiteAVSDK_TRTC
 import UIKit
 import WebKit
 @_exported import hhVDoctorSDK
+public protocol AEAD {
+  static var kLen: Swift.Int { get }
+  static var ivRange: Swift.Range<Swift.Int> { get }
+}
+extension Array {
+  public init(reserveCapacity: Swift.Int)
+}
+extension Array where Element == Swift.UInt8 {
+  public init(hex: Swift.String)
+  public func toHexString() -> Swift.String
+}
+extension Array where Element == Swift.UInt8 {
+  public func chunks(size chunksize: Swift.Int) -> Swift.Array<Swift.Array<Element>>
+  public func sha1() -> [Element]
+  public func encrypt(cipher: hhVDoctorSDK.Cipher) throws -> [Element]
+  public func decrypt(cipher: hhVDoctorSDK.Cipher) throws -> [Element]
+  public func authenticate<A>(with authenticator: A) throws -> [Element] where A : hhVDoctorSDK.Authenticator
+}
+extension Array where Element == Swift.UInt8 {
+  public func toBase64() -> Swift.String?
+  public init(base64: Swift.String)
+}
+public protocol Authenticator {
+  func authenticate(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+}
+public enum Bit : Swift.Int {
+  case zero
+  case one
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
 public class BusyPics {
   public static let `default`: hhVDoctorSDK.BusyPics
   public func cacheImgs()
   public func getImgs() -> [Foundation.URL?]
   @objc deinit
+}
+public enum CipherError : Swift.Error {
+  case encrypt
+  case decrypt
+  public static func == (a: hhVDoctorSDK.CipherError, b: hhVDoctorSDK.CipherError) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+}
+public protocol Cipher : AnyObject {
+  var keySize: Swift.Int { get }
+  func encrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  func encrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  func decrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  func decrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+}
+extension Cipher {
+  public func encrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  public func decrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
 }
 @objc public class CommentBaseVC : UIKit.UIViewController {
   @objc override dynamic public func viewWillAppear(_ animated: Swift.Bool)
@@ -48,6 +102,16 @@ extension UIImageView {
   public func hh_image(url: Foundation.URL?, placeHolder: UIKit.UIImage?, progresses: ((CoreGraphics.CGFloat) -> Swift.Void)?, complete: ((UIKit.UIImage?, Foundation.URL?) -> Swift.Void)?)
 }
 public func hh_downloadImg(_ url: Foundation.URL?, finish: @escaping ((UIKit.UIImage?, Foundation.Data?, Swift.Error?) -> Swift.Void))
+public protocol Cryptors : AnyObject {
+  associatedtype EncryptorType : hhVDoctorSDK.Updatable
+  associatedtype DecryptorType : hhVDoctorSDK.Updatable
+  func makeEncryptor() throws -> Self.EncryptorType
+  func makeDecryptor() throws -> Self.DecryptorType
+  static func randomIV(_ blockSize: Swift.Int) -> Swift.Array<Swift.UInt8>
+}
+extension Cryptors {
+  public static func randomIV(_ blockSize: Swift.Int) -> Swift.Array<Swift.UInt8>
+}
 extension Data {
   public func checksum() -> Swift.UInt16
   public func sha1() -> Foundation.Data
@@ -61,33 +125,6 @@ extension Data {
     get
   }
   public func toHexString() -> Swift.String
-}
-public protocol Updatable {
-  mutating func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool) throws -> Swift.Array<Swift.UInt8>
-  mutating func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
-  mutating func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
-  mutating func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
-}
-extension Updatable {
-  mutating public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
-  @discardableResult
-  mutating public func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
-  @discardableResult
-  mutating public func finish() throws -> Swift.Array<Swift.UInt8>
-  mutating public func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
-  mutating public func finish(output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
-}
-extension Updatable {
-  @discardableResult
-  mutating public func update(withBytes bytes: Swift.Array<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
-  mutating public func update(withBytes bytes: Swift.Array<Swift.UInt8>, isLast: Swift.Bool = false, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
-  @discardableResult
-  mutating public func finish(withBytes bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
-  mutating public func finish(withBytes bytes: Swift.Array<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
-}
-extension Rabbit {
-  convenience public init(key: Swift.String) throws
-  convenience public init(key: Swift.String, iv: Swift.String) throws
 }
 public struct DGElasticPullToRefreshConstants {
   public static var WaveMaxHeight: CoreGraphics.CGFloat
@@ -159,42 +196,9 @@ public enum DGElasticPullToRefreshState : Swift.Int {
   @objc override dynamic open func layoutSubviews()
   @objc override dynamic public init(frame: CoreGraphics.CGRect)
 }
-public enum CipherError : Swift.Error {
-  case encrypt
-  case decrypt
-  public static func == (a: hhVDoctorSDK.CipherError, b: hhVDoctorSDK.CipherError) -> Swift.Bool
-  public var hashValue: Swift.Int {
-    get
-  }
-  public func hash(into hasher: inout Swift.Hasher)
-}
-public protocol Cipher : AnyObject {
-  var keySize: Swift.Int { get }
-  func encrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
-  func encrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
-  func decrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
-  func decrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
-}
-extension Cipher {
-  public func encrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
-  public func decrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
-}
-extension String {
-  public func decryptBase64ToString(cipher: hhVDoctorSDK.Cipher) throws -> Swift.String
-  public func decryptBase64(cipher: hhVDoctorSDK.Cipher) throws -> Swift.Array<Swift.UInt8>
-}
-public enum Bit : Swift.Int {
-  case zero
-  case one
-  public typealias RawValue = Swift.Int
-  public init?(rawValue: Swift.Int)
-  public var rawValue: Swift.Int {
-    get
-  }
-}
-public protocol AEAD {
-  static var kLen: Swift.Int { get }
-  static var ivRange: Swift.Range<Swift.Int> { get }
+public typealias Hash = hhVDoctorSDK.Digest
+public struct Digest {
+  public static func sha1(_ bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
 }
 @objc public protocol FloatRatingViewDelegate {
   @objc func floatRatingView(_ ratingView: hhVDoctorSDK.FloatRatingView, didUpdate rating: Swift.Float)
@@ -251,20 +255,6 @@ public class HHCameraConfig {
   public init()
   public func build(_ block: (inout hhVDoctorSDK.HHCameraConfig) -> Swift.Void) -> hhVDoctorSDK.HHCameraConfig
   @objc deinit
-}
-extension Array {
-  public init(reserveCapacity: Swift.Int)
-}
-extension Array where Element == Swift.UInt8 {
-  public init(hex: Swift.String)
-  public func toHexString() -> Swift.String
-}
-extension Array where Element == Swift.UInt8 {
-  public func chunks(size chunksize: Swift.Int) -> Swift.Array<Swift.Array<Element>>
-  public func sha1() -> [Element]
-  public func encrypt(cipher: hhVDoctorSDK.Cipher) throws -> [Element]
-  public func decrypt(cipher: hhVDoctorSDK.Cipher) throws -> [Element]
-  public func authenticate<A>(with authenticator: A) throws -> [Element] where A : hhVDoctorSDK.Authenticator
 }
 public typealias HHFetchBlock = (UIKit.UIImage?, [Swift.AnyHashable : Any]?) -> Swift.Void
 public typealias onCanceled = (() -> Swift.Void)
@@ -324,9 +314,6 @@ extension HHDateUtils {
   public static func jailBrokend() -> Swift.Bool
   @objc override dynamic public init()
   @objc deinit
-}
-public protocol Authenticator {
-  func authenticate(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
 }
 public struct HHEmptyModel : hhVDoctorSDK.Mappable {
   public init()
@@ -411,16 +398,6 @@ public class HHFileUploadManager {
   public func cancelAll(_ finished: (() -> Swift.Void)? = nil)
   @objc deinit
 }
-public protocol Cryptors : AnyObject {
-  associatedtype EncryptorType : hhVDoctorSDK.Updatable
-  associatedtype DecryptorType : hhVDoctorSDK.Updatable
-  func makeEncryptor() throws -> Self.EncryptorType
-  func makeDecryptor() throws -> Self.DecryptorType
-  static func randomIV(_ blockSize: Swift.Int) -> Swift.Array<Swift.UInt8>
-}
-extension Cryptors {
-  public static func randomIV(_ blockSize: Swift.Int) -> Swift.Array<Swift.UInt8>
-}
 public protocol HHHUDable {
   var autoDismissDuration: Foundation.TimeInterval { get }
   func showHUD()
@@ -428,29 +405,6 @@ public protocol HHHUDable {
   func showSuccess(_ message: Swift.String?)
   func showError(_ messgae: Swift.String?)
   func setDismissDuration(_ duraion: Foundation.TimeInterval)
-}
-final public class Rabbit {
-  public enum Error : Swift.Error {
-    case invalidKeyOrInitializationVector
-    public static func == (a: hhVDoctorSDK.Rabbit.Error, b: hhVDoctorSDK.Rabbit.Error) -> Swift.Bool
-    public var hashValue: Swift.Int {
-      get
-    }
-    public func hash(into hasher: inout Swift.Hasher)
-  }
-  public static let ivSize: Swift.Int
-  public static let keySize: Swift.Int
-  public static let blockSize: Swift.Int
-  final public var keySize: Swift.Int {
-    get
-  }
-  convenience public init(key: Swift.Array<Swift.UInt8>) throws
-  public init(key: Swift.Array<Swift.UInt8>, iv: Swift.Array<Swift.UInt8>?) throws
-  @objc deinit
-}
-extension Rabbit : hhVDoctorSDK.Cipher {
-  final public func encrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
-  final public func decrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
 }
 @objc public class HHLocation : ObjectiveC.NSObject {
   @objc public static let `default`: hhVDoctorSDK.HHLocation
@@ -769,14 +723,6 @@ public struct HHStaticsConfig : hhVDoctorSDK.SDKRequest {
   public func extensionUrlHost() -> Swift.String?
   public func loadAppVersion() -> Swift.Bool
 }
-public protocol _UInt8Type {
-}
-extension UInt8 : hhVDoctorSDK._UInt8Type {
-}
-extension UInt8 {
-  public func bits() -> [hhVDoctorSDK.Bit]
-  public func bits() -> Swift.String
-}
 public class HHUrl {
   public static func makeUrl(_ url: Swift.String) -> Swift.String
   @objc deinit
@@ -809,19 +755,6 @@ open class HHValueObservable<T> {
   }
   public init(_ v: T)
   @objc deinit
-}
-final public class SHA1 {
-  public init()
-  final public func calculate(for bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
-  @objc deinit
-}
-extension SHA1 : hhVDoctorSDK.Updatable {
-  @discardableResult
-  final public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
-}
-public typealias Hash = hhVDoctorSDK.Digest
-public struct Digest {
-  public static func sha1(_ bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
 }
 public class LoginManager {
   public static let `default`: hhVDoctorSDK.LoginManager
@@ -869,15 +802,6 @@ public protocol Mappable : hhVDoctorSDK.BaseMappable {
 }
 public protocol SDKRequest : hhVDoctorSDK.HHRequestConfig {
 }
-extension String {
-  public var bytes: Swift.Array<Swift.UInt8> {
-    get
-  }
-  public func sha1() -> Swift.String
-  public func encrypt(cipher: hhVDoctorSDK.Cipher) throws -> Swift.String
-  public func encryptToBase64(cipher: hhVDoctorSDK.Cipher) throws -> Swift.String?
-  public func authenticate<A>(with authenticator: A) throws -> Swift.String where A : hhVDoctorSDK.Authenticator
-}
 infix operator <- : DefaultPrecedence
 infix operator >>> : DefaultPrecedence
 public func <- <T>(left: inout T, right: hhVDoctorSDK.Map)
@@ -908,6 +832,20 @@ public func <- <T>(left: inout Swift.Set<T>, right: hhVDoctorSDK.Map) where T : 
 public func >>> <T>(left: Swift.Set<T>, right: hhVDoctorSDK.Map) where T : Swift.Hashable, T : hhVDoctorSDK.BaseMappable
 public func <- <T>(left: inout Swift.Set<T>?, right: hhVDoctorSDK.Map) where T : Swift.Hashable, T : hhVDoctorSDK.BaseMappable
 public func >>> <T>(left: Swift.Set<T>?, right: hhVDoctorSDK.Map) where T : Swift.Hashable, T : hhVDoctorSDK.BaseMappable
+public protocol PaddingProtocol {
+  func add(to: Swift.Array<Swift.UInt8>, blockSize: Swift.Int) -> Swift.Array<Swift.UInt8>
+  func remove(from: Swift.Array<Swift.UInt8>, blockSize: Swift.Int?) -> Swift.Array<Swift.UInt8>
+}
+public enum Padding : hhVDoctorSDK.PaddingProtocol {
+  case noPadding, zeroPadding
+  public func add(to: Swift.Array<Swift.UInt8>, blockSize: Swift.Int) -> Swift.Array<Swift.UInt8>
+  public func remove(from: Swift.Array<Swift.UInt8>, blockSize: Swift.Int?) -> Swift.Array<Swift.UInt8>
+  public static func == (a: hhVDoctorSDK.Padding, b: hhVDoctorSDK.Padding) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+}
 @objc public enum PermissionType : Swift.Int {
   case locationAlways
   case locationWhenInUse
@@ -942,23 +880,36 @@ public class PhotoPickerConfig {
   public var mDetailColumnCount: Swift.Int
   @objc deinit
 }
+extension Rabbit {
+  convenience public init(key: Swift.String) throws
+  convenience public init(key: Swift.String, iv: Swift.String) throws
+}
+final public class Rabbit {
+  public enum Error : Swift.Error {
+    case invalidKeyOrInitializationVector
+    public static func == (a: hhVDoctorSDK.Rabbit.Error, b: hhVDoctorSDK.Rabbit.Error) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public static let ivSize: Swift.Int
+  public static let keySize: Swift.Int
+  public static let blockSize: Swift.Int
+  final public var keySize: Swift.Int {
+    get
+  }
+  convenience public init(key: Swift.Array<Swift.UInt8>) throws
+  public init(key: Swift.Array<Swift.UInt8>, iv: Swift.Array<Swift.UInt8>?) throws
+  @objc deinit
+}
+extension Rabbit : hhVDoctorSDK.Cipher {
+  final public func encrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  final public func decrypt(_ bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+}
 public protocol RandomAccessCryptor : hhVDoctorSDK.Updatable {
   @discardableResult
   mutating func seek(to: Swift.Int) -> Swift.Bool
-}
-public protocol PaddingProtocol {
-  func add(to: Swift.Array<Swift.UInt8>, blockSize: Swift.Int) -> Swift.Array<Swift.UInt8>
-  func remove(from: Swift.Array<Swift.UInt8>, blockSize: Swift.Int?) -> Swift.Array<Swift.UInt8>
-}
-public enum Padding : hhVDoctorSDK.PaddingProtocol {
-  case noPadding, zeroPadding
-  public func add(to: Swift.Array<Swift.UInt8>, blockSize: Swift.Int) -> Swift.Array<Swift.UInt8>
-  public func remove(from: Swift.Array<Swift.UInt8>, blockSize: Swift.Int?) -> Swift.Array<Swift.UInt8>
-  public static func == (a: hhVDoctorSDK.Padding, b: hhVDoctorSDK.Padding) -> Swift.Bool
-  public var hashValue: Swift.Int {
-    get
-  }
-  public func hash(into hasher: inout Swift.Hasher)
 }
 public enum ReachabilityError : Swift.Error {
   case FailedToCreateWithAddress(Darwin.sockaddr_in)
@@ -1011,9 +962,27 @@ extension Reachability {
     get
   }
 }
-extension Array where Element == Swift.UInt8 {
-  public func toBase64() -> Swift.String?
-  public init(base64: Swift.String)
+final public class SHA1 {
+  public init()
+  final public func calculate(for bytes: Swift.Array<Swift.UInt8>) -> Swift.Array<Swift.UInt8>
+  @objc deinit
+}
+extension SHA1 : hhVDoctorSDK.Updatable {
+  @discardableResult
+  final public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
+}
+extension String {
+  public var bytes: Swift.Array<Swift.UInt8> {
+    get
+  }
+  public func sha1() -> Swift.String
+  public func encrypt(cipher: hhVDoctorSDK.Cipher) throws -> Swift.String
+  public func encryptToBase64(cipher: hhVDoctorSDK.Cipher) throws -> Swift.String?
+  public func authenticate<A>(with authenticator: A) throws -> Swift.String where A : hhVDoctorSDK.Authenticator
+}
+extension String {
+  public func decryptBase64ToString(cipher: hhVDoctorSDK.Cipher) throws -> Swift.String
+  public func decryptBase64(cipher: hhVDoctorSDK.Cipher) throws -> Swift.Array<Swift.UInt8>
 }
 public enum hhToastPosition {
   case top
@@ -1126,13 +1095,15 @@ extension TRTCManager {
   public func isLogined() -> Swift.Bool
   public func login(complete: @escaping hhVDoctorSDK.HHLoginHandler)
 }
-extension TRTCManager : ImSDK.TIMMessageListener {
-  @objc dynamic public func onNewMessage(_ msgs: [Any]!)
+extension TRTCManager : ImSDK_Smart.V2TIMAdvancedMsgListener {
+  @objc dynamic public func onRecvNewMessage(_ msg: ImSDK_Smart.V2TIMMessage!)
 }
-extension TRTCManager : ImSDK.TIMConnListener {
-  @objc dynamic public func onConnSucc()
-  @objc dynamic public func onConnFailed(_ code: Swift.Int32, err: Swift.String!)
-  @objc dynamic public func onDisconnect(_ code: Swift.Int32, err: Swift.String!)
+extension TRTCManager : ImSDK_Smart.V2TIMSDKListener {
+  @objc dynamic public func onConnectSuccess()
+  @objc dynamic public func onConnectFailed(_ code: Swift.Int32, err: Swift.String!)
+  @objc dynamic public func onKickedOffline()
+  public func onReConnFailed(_ code: Swift.Int32, err: Swift.String!)
+  @objc dynamic public func onUserSigExpired()
 }
 extension TRTCManager : TXLiteAVSDK_TRTC.TRTCCloudDelegate {
   @objc dynamic public func onEnterRoom(_ result: Swift.Int)
@@ -1141,13 +1112,39 @@ extension TRTCManager : TXLiteAVSDK_TRTC.TRTCCloudDelegate {
 extension TRTCManager : TXLiteAVSDK_TRTC.TRTCLogDelegate {
   @objc dynamic public func onLog(_ log: Swift.String?, logLevel level: TXLiteAVSDK_TRTC.TRTCLogLevel, whichModule module: Swift.String?)
 }
-extension TRTCManager : ImSDK.TIMUserStatusListener {
-  @objc dynamic public func onForceOffline()
-  @objc dynamic public func onReConnFailed(_ code: Swift.Int32, err: Swift.String!)
-  @objc dynamic public func onUserSigExpired()
-}
 extension String {
   public func subFrom(_ index: Swift.Int) -> Swift.String
+}
+public protocol _UInt8Type {
+}
+extension UInt8 : hhVDoctorSDK._UInt8Type {
+}
+extension UInt8 {
+  public func bits() -> [hhVDoctorSDK.Bit]
+  public func bits() -> Swift.String
+}
+public protocol Updatable {
+  mutating func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool) throws -> Swift.Array<Swift.UInt8>
+  mutating func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+  mutating func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  mutating func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+}
+extension Updatable {
+  mutating public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+  @discardableResult
+  mutating public func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  @discardableResult
+  mutating public func finish() throws -> Swift.Array<Swift.UInt8>
+  mutating public func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+  mutating public func finish(output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+}
+extension Updatable {
+  @discardableResult
+  mutating public func update(withBytes bytes: Swift.Array<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
+  mutating public func update(withBytes bytes: Swift.Array<Swift.UInt8>, isLast: Swift.Bool = false, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+  @discardableResult
+  mutating public func finish(withBytes bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  mutating public func finish(withBytes bytes: Swift.Array<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
 }
 public typealias onProgress = ((CoreGraphics.CGFloat, Swift.String) -> Swift.Void)
 public typealias onUploadOnce = ((Swift.Bool, hhVDoctorSDK.HHUploadModel) -> Swift.Void)
@@ -1191,14 +1188,14 @@ public class WeakArray<T> {
   public func excute(_ block: @escaping ((T?) -> Swift.Void))
   @objc deinit
 }
-extension hhVDoctorSDK.DGElasticPullToRefreshState : Swift.Equatable {}
-extension hhVDoctorSDK.DGElasticPullToRefreshState : Swift.Hashable {}
-extension hhVDoctorSDK.DGElasticPullToRefreshState : Swift.RawRepresentable {}
-extension hhVDoctorSDK.CipherError : Swift.Equatable {}
-extension hhVDoctorSDK.CipherError : Swift.Hashable {}
 extension hhVDoctorSDK.Bit : Swift.Equatable {}
 extension hhVDoctorSDK.Bit : Swift.Hashable {}
 extension hhVDoctorSDK.Bit : Swift.RawRepresentable {}
+extension hhVDoctorSDK.CipherError : Swift.Equatable {}
+extension hhVDoctorSDK.CipherError : Swift.Hashable {}
+extension hhVDoctorSDK.DGElasticPullToRefreshState : Swift.Equatable {}
+extension hhVDoctorSDK.DGElasticPullToRefreshState : Swift.Hashable {}
+extension hhVDoctorSDK.DGElasticPullToRefreshState : Swift.RawRepresentable {}
 extension hhVDoctorSDK.HHMediaType : Swift.Equatable {}
 extension hhVDoctorSDK.HHMediaType : Swift.Hashable {}
 extension hhVDoctorSDK.HHMediaType : Swift.RawRepresentable {}
@@ -1207,8 +1204,6 @@ extension hhVDoctorSDK.DateFormat : Swift.Hashable {}
 extension hhVDoctorSDK.DateFormat : Swift.RawRepresentable {}
 extension hhVDoctorSDK.HHFileCacheManager.HHAssetPathType : Swift.Equatable {}
 extension hhVDoctorSDK.HHFileCacheManager.HHAssetPathType : Swift.Hashable {}
-extension hhVDoctorSDK.Rabbit.Error : Swift.Equatable {}
-extension hhVDoctorSDK.Rabbit.Error : Swift.Hashable {}
 extension hhVDoctorSDK.HHLogMode : Swift.Equatable {}
 extension hhVDoctorSDK.HHLogMode : Swift.Hashable {}
 extension hhVDoctorSDK.HHLogMode : Swift.RawRepresentable {}
@@ -1231,11 +1226,13 @@ extension hhVDoctorSDK.HHServerType : Swift.Hashable {}
 extension hhVDoctorSDK.HHPagerViewTransformerType : Swift.Equatable {}
 extension hhVDoctorSDK.HHPagerViewTransformerType : Swift.Hashable {}
 extension hhVDoctorSDK.HHPagerViewTransformerType : Swift.RawRepresentable {}
+extension hhVDoctorSDK.Padding : Swift.Equatable {}
+extension hhVDoctorSDK.Padding : Swift.Hashable {}
 extension hhVDoctorSDK.PermissionType : Swift.Equatable {}
 extension hhVDoctorSDK.PermissionType : Swift.Hashable {}
 extension hhVDoctorSDK.PermissionType : Swift.RawRepresentable {}
-extension hhVDoctorSDK.Padding : Swift.Equatable {}
-extension hhVDoctorSDK.Padding : Swift.Hashable {}
+extension hhVDoctorSDK.Rabbit.Error : Swift.Equatable {}
+extension hhVDoctorSDK.Rabbit.Error : Swift.Hashable {}
 extension hhVDoctorSDK.Reachability.NetworkStatus : Swift.Hashable {}
 extension hhVDoctorSDK.hhToastPosition : Swift.Equatable {}
 extension hhVDoctorSDK.hhToastPosition : Swift.Hashable {}
