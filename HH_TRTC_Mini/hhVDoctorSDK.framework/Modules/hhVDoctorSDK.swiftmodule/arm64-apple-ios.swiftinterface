@@ -532,8 +532,8 @@ extension HHMSDK {
   @objc optional func onForceOffline()
 }
 @objc public class HHVideoDoctorInfo : ObjectiveC.NSObject {
-  public var name: Swift.String?
-  public var photourl: Swift.String?
+  @objc public var name: Swift.String?
+  @objc public var photourl: Swift.String?
   public init(_ name: Swift.String, photo: Swift.String)
   @objc deinit
   @objc override dynamic public init()

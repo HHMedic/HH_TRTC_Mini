@@ -505,8 +505,6 @@ SWIFT_PROTOCOL("_TtP12hhVDoctorSDK16HHMVideoDelegate_")
 @protocol HHMVideoDelegate <NSObject>
 @optional
 /// 主动视频时的呼叫状态变化
-/// \param state 当前呼叫状态
-///
 - (void)callStateChange:(enum HHMCallingState)state;
 /// 通话已接通
 - (void)callDidEstablish;
@@ -628,6 +626,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong, getter=defau
 
 SWIFT_CLASS("_TtC12hhVDoctorSDK17HHVideoDoctorInfo")
 @interface HHVideoDoctorInfo : NSObject
+@property (nonatomic, copy) NSString * _Nullable name;
+@property (nonatomic, copy) NSString * _Nullable photourl;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
