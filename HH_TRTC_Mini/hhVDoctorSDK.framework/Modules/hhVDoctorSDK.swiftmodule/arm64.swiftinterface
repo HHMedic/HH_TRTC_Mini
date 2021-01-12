@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.1 (swiftlang-1100.0.270.13 clang-1100.0.33.7)
+// swift-compiler-version: Apple Swift version 5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)
 // swift-module-flags: -target arm64-apple-ios9.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name hhVDoctorSDK
 import AVFoundation
 import AdSupport
@@ -53,7 +53,7 @@ public enum Bit : Swift.Int {
     get
   }
 }
-public class BusyPics {
+@_hasMissingDesignatedInitializers public class BusyPics {
   public static let `default`: hhVDoctorSDK.BusyPics
   public func cacheImgs()
   public func getImgs() -> [Foundation.URL?]
@@ -79,18 +79,18 @@ extension Cipher {
   public func encrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
   public func decrypt(_ bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
 }
-@objc public class CommentBaseVC : UIKit.UIViewController {
+@objc @_inheritsConvenienceInitializers public class CommentBaseVC : UIKit.UIViewController {
   @objc override dynamic public func viewWillAppear(_ animated: Swift.Bool)
+  @objc deinit
   @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc deinit
 }
-@objc public class CommentVC : hhVDoctorSDK.CommentBaseVC {
+@objc @_inheritsConvenienceInitializers public class CommentVC : hhVDoctorSDK.CommentBaseVC {
   @objc override dynamic public func viewDidLoad()
   public static func show(_ orderId: Swift.String, docId: Swift.String, uuid: Swift.Int?, type: hhVDoctorSDK.HHCallType?, _ model: hhVDoctorSDK.HHGetQuesetionModel?)
+  @objc deinit
   @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc deinit
 }
 extension String {
   public func subTo(_ index: Swift.Int) -> Swift.String
@@ -153,7 +153,7 @@ extension UIPanGestureRecognizer {
 extension UIGestureRecognizer.State {
   public func dg_isAnyOf(_ values: [UIKit.UIGestureRecognizer.State]) -> Swift.Bool
 }
-@objc open class DGElasticPullToRefreshLoadingView : UIKit.UIView {
+@objc @_inheritsConvenienceInitializers open class DGElasticPullToRefreshLoadingView : UIKit.UIView {
   @objc dynamic public init()
   @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
@@ -174,8 +174,8 @@ extension CGFloat {
   override open func stopLoading()
   @objc override dynamic open func tintColorDidChange()
   @objc override dynamic open func layoutSubviews()
-  @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
+  @objc override dynamic public init(frame: CoreGraphics.CGRect)
 }
 public enum DGElasticPullToRefreshState : Swift.Int {
   case stopped
@@ -189,7 +189,7 @@ public enum DGElasticPullToRefreshState : Swift.Int {
     get
   }
 }
-@objc open class DGElasticPullToRefreshView : UIKit.UIView {
+@objc @_hasMissingDesignatedInitializers open class DGElasticPullToRefreshView : UIKit.UIView {
   @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
   @objc deinit
   @objc override dynamic open func observeValue(forKeyPath keyPath: Swift.String?, of object: Any?, change: [Foundation.NSKeyValueChangeKey : Any]?, context: Swift.UnsafeMutableRawPointer?)
@@ -204,7 +204,7 @@ public struct Digest {
   @objc func floatRatingView(_ ratingView: hhVDoctorSDK.FloatRatingView, didUpdate rating: Swift.Float)
   @objc optional func floatRatingView(_ ratingView: hhVDoctorSDK.FloatRatingView, isUpdating rating: Swift.Float)
 }
-@objc @IBDesignable open class FloatRatingView : UIKit.UIView {
+@objc @_inheritsConvenienceInitializers @IBDesignable open class FloatRatingView : UIKit.UIView {
   weak open var delegate: hhVDoctorSDK.FloatRatingViewDelegate?
   @objc @IBInspectable open var emptyImage: UIKit.UIImage? {
     @objc get
@@ -238,10 +238,10 @@ public struct Digest {
   @objc override dynamic open func touchesEnded(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
   @objc deinit
 }
-@objc public class HHAccountManager : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers public class HHAccountManager : ObjectiveC.NSObject {
   public static func getUUID() -> Swift.String?
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
 public class HHCameraConfig {
   weak public var sender: UIKit.UIViewController!
@@ -290,12 +290,12 @@ public enum DateFormat : Swift.String {
     get
   }
 }
-@objc public class HHDateUtils : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers public class HHDateUtils : ObjectiveC.NSObject {
   public class func getDateForChinaStr() -> Swift.String
   public static func stringWithDurationFromSeconds(_ seconds: Foundation.TimeInterval) -> Swift.String
   public static func component(_ date: Foundation.Date) -> Foundation.DateComponents
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
 extension HHDateUtils {
   public class func date2String(_ date: Foundation.Date, format: Swift.String) -> Swift.String
@@ -310,17 +310,17 @@ extension HHDateUtils {
   public static func dateStringFromInt(_ date: Swift.Int) -> Swift.String
   public static func dateYearStringFromInt(_ date: Swift.Int) -> Swift.String
 }
-@objc open class HHDeviceManager : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers open class HHDeviceManager : ObjectiveC.NSObject {
   public static func jailBrokend() -> Swift.Bool
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
 public struct HHEmptyModel : hhVDoctorSDK.Mappable {
   public init()
   public init?(map: hhVDoctorSDK.Map)
-  mutating public func mapping(map: hhVDoctorSDK.Map)
+  public mutating func mapping(map: hhVDoctorSDK.Map)
 }
-public class HHEncryptUtils {
+@_hasMissingDesignatedInitializers public class HHEncryptUtils {
   public static func encrypto(key: Swift.String, content: Swift.String) -> Swift.String?
   public static func decrypto(key: Swift.String, content: Swift.String) -> Swift.String?
   public static func encrypto(key: Swift.String, content: Foundation.Data) -> Foundation.Data?
@@ -332,7 +332,7 @@ public struct HHGetQuesetionModel : hhVDoctorSDK.Mappable {
   public var rate: [hhVDoctorSDK.rateModel]?
   public init?(map: hhVDoctorSDK.Map)
   public init()
-  mutating public func mapping(map: hhVDoctorSDK.Map)
+  public mutating func mapping(map: hhVDoctorSDK.Map)
   public func isHaveQ() -> Swift.Bool
 }
 public struct HHQuesetionModel : hhVDoctorSDK.Mappable {
@@ -341,7 +341,7 @@ public struct HHQuesetionModel : hhVDoctorSDK.Mappable {
   public var content: Swift.String?
   public var id: Swift.Int?
   public init?(map: hhVDoctorSDK.Map)
-  mutating public func mapping(map: hhVDoctorSDK.Map)
+  public mutating func mapping(map: hhVDoctorSDK.Map)
 }
 public struct rateModel : hhVDoctorSDK.Mappable {
   public var createTime: Swift.Int?
@@ -350,9 +350,9 @@ public struct rateModel : hhVDoctorSDK.Mappable {
   public var id: Swift.Int?
   public var answerOne: Swift.String?
   public init?(map: hhVDoctorSDK.Map)
-  mutating public func mapping(map: hhVDoctorSDK.Map)
+  public mutating func mapping(map: hhVDoctorSDK.Map)
 }
-@objc public class HHFileCacheManager : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers public class HHFileCacheManager : ObjectiveC.NSObject {
   public enum HHAssetPathType {
     case image
     case video
@@ -367,8 +367,8 @@ public struct rateModel : hhVDoctorSDK.Mappable {
     }
     public func hash(into hasher: inout Swift.Hasher)
   }
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
 extension HHFileCacheManager {
   public class func getFileFormat(_ name: Swift.String) -> hhVDoctorSDK.HHFileCacheManager.HHAssetPathType
@@ -381,7 +381,7 @@ extension HHFileCacheManager {
 public var uploadManager: hhVDoctorSDK.UploadQueue {
   get
 }
-public class UploadQueue {
+@_hasMissingDesignatedInitializers public class UploadQueue {
   @discardableResult
   public func upload(files: [Swift.String], config: hhVDoctorSDK.HHUploadConfig) -> hhVDoctorSDK.HHFileUploadManager
   public func cancelAll(_ finished: (() -> Swift.Void)? = nil)
@@ -406,12 +406,12 @@ public protocol HHHUDable {
   func showError(_ messgae: Swift.String?)
   func setDismissDuration(_ duraion: Foundation.TimeInterval)
 }
-@objc public class HHLocation : ObjectiveC.NSObject {
+@_inheritsConvenienceInitializers @objc public class HHLocation : ObjectiveC.NSObject {
   @objc public static let `default`: hhVDoctorSDK.HHLocation
   @objc public func startLocation(lng: Swift.String, lat: Swift.String)
   @objc public func closeLocation()
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
 public enum HHLogMode : Swift.Int {
   case error
@@ -426,15 +426,15 @@ public enum HHLogMode : Swift.Int {
   }
 }
 public func logging(type: hhVDoctorSDK.HHLogMode = .info, _ tip: Swift.String)
-@objc open class HHMediaStatusCheckUtils : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers open class HHMediaStatusCheckUtils : ObjectiveC.NSObject {
   open class func checkCameraAccess() -> Swift.Bool
   open class func checkCameraVideoPermission() -> Swift.Bool
   open class func checkAlbumAccess() -> Swift.Bool
   open class func checkAudioAccess() -> Swift.Bool
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
-public class HHModelCache {
+@_hasMissingDesignatedInitializers public class HHModelCache {
   public static let instance: hhVDoctorSDK.HHModelCache
   public func cacheModel(_ name: Swift.String, content: Swift.String?)
   public func cacheModel(_ name: Swift.String, content: Foundation.Data?)
@@ -443,7 +443,7 @@ public class HHModelCache {
   @objc deinit
 }
 public typealias HHLoginHandler = ((Swift.String?) -> Swift.Void)
-@objc public class HHMSDK : ObjectiveC.NSObject {
+@_inheritsConvenienceInitializers @objc public class HHMSDK : ObjectiveC.NSObject {
   @objc public static let `default`: hhVDoctorSDK.HHMSDK
   @objc public func start(option: hhVDoctorSDK.HHSDKOptions)
   @objc public func login(userToken: Swift.String, completion: @escaping hhVDoctorSDK.HHLoginHandler)
@@ -535,8 +535,8 @@ extension HHMSDK {
   @objc public var name: Swift.String?
   @objc public var photourl: Swift.String?
   public init(_ name: Swift.String, photo: Swift.String)
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
 public typealias HHNetError = ((Swift.String) -> (Swift.Void))
 public typealias HHNetSuccessNoData = () -> Swift.Void
@@ -571,7 +571,7 @@ extension UIControl.State : Swift.Hashable {
     get
   }
 }
-@objc @IBDesignable public class HHPagerView : UIKit.UIView, UIKit.UICollectionViewDataSource, UIKit.UICollectionViewDelegate {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @IBDesignable public class HHPagerView : UIKit.UIView, UIKit.UICollectionViewDataSource, UIKit.UICollectionViewDelegate {
   @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
   @objc override dynamic public func layoutSubviews()
   @objc override dynamic public func willMove(toWindow newWindow: UIKit.UIWindow?)
@@ -608,7 +608,7 @@ extension UIControl.State : Swift.Hashable {
     get
   }
 }
-@objc public class HHPhotoPickerController : UIKit.UINavigationController {
+@objc @_inheritsConvenienceInitializers public class HHPhotoPickerController : UIKit.UINavigationController {
   @objc override dynamic public func viewDidLoad()
   convenience public init(localPath: Swift.String? = nil, deleteMode: Swift.Bool = false, finish: (([hhVDoctorSDK.HHCameraImageModel]?) -> Swift.Void)? = nil)
   public static func selectLocalImags(path: Swift.String? = nil, finish: (([hhVDoctorSDK.HHCameraImageModel]?) -> Swift.Void)?) -> hhVDoctorSDK.HHPhotoPickerController
@@ -668,7 +668,7 @@ public var HMHudManager: hhVDoctorSDK.HHHUDable {
 }
 @objc public class HHSDKOptions : ObjectiveC.NSObject {
   @objc public static let `default`: hhVDoctorSDK.HHSDKOptions
-  @objc public var hudDisTime: Foundation.TimeInterval {
+  @objc public var hudDisTime: Swift.Double {
     @objc get
     @objc set
   }
@@ -689,7 +689,7 @@ public var HMHudManager: hhVDoctorSDK.HHHUDable {
   @objc override dynamic public init()
   @objc deinit
 }
-@objc public class VideoOptions : ObjectiveC.NSObject {
+@_inheritsConvenienceInitializers @objc public class VideoOptions : ObjectiveC.NSObject {
   public var filterCallerInfo: Swift.Bool
   @objc public var allowBeauty: Swift.Bool
   @objc public var allowEvaluate: Swift.Bool
@@ -699,7 +699,7 @@ public var HMHudManager: hhVDoctorSDK.HHHUDable {
   @objc override dynamic public init()
   @objc deinit
 }
-@objc public class MessageOptions : ObjectiveC.NSObject {
+@_inheritsConvenienceInitializers @objc public class MessageOptions : ObjectiveC.NSObject {
   @objc public var isByPresent: Swift.Bool
   @objc public var isFilterSummary: Swift.Bool
   @objc public var isFilterMedicinal: Swift.Bool
@@ -709,7 +709,7 @@ public var HMHudManager: hhVDoctorSDK.HHHUDable {
   @objc override dynamic public init()
   @objc deinit
 }
-@objc public class UsercenterOptions : ObjectiveC.NSObject {
+@_inheritsConvenienceInitializers @objc public class UsercenterOptions : ObjectiveC.NSObject {
   @objc public var enableVipInfo: Swift.Bool
   @objc public var hideUserCenter: Swift.Bool
   @objc public var enableActivate: Swift.Bool
@@ -718,7 +718,7 @@ public var HMHudManager: hhVDoctorSDK.HHHUDable {
   @objc override dynamic public init()
   @objc deinit
 }
-public class HHStatics {
+@_hasMissingDesignatedInitializers public class HHStatics {
   public static let `default`: hhVDoctorSDK.HHStatics
   public func send(params: [Swift.String : Any])
   @objc deinit
@@ -731,15 +731,15 @@ public struct HHStaticsConfig : hhVDoctorSDK.SDKRequest {
   public func extensionUrlHost() -> Swift.String?
   public func loadAppVersion() -> Swift.Bool
 }
-public class HHUrl {
+@_hasMissingDesignatedInitializers public class HHUrl {
   public static func makeUrl(_ url: Swift.String) -> Swift.String
   @objc deinit
 }
-public class UrlParams {
+@_hasMissingDesignatedInitializers public class UrlParams {
   public static func addCommon(_ param: [Swift.String : Any]?) -> [Swift.String : Any]
   @objc deinit
 }
-public class HHUserModel : hhVDoctorSDK.Mappable {
+@_hasMissingDesignatedInitializers public class HHUserModel : hhVDoctorSDK.Mappable {
   public var product: hhVDoctorSDK.HHMemberInfoModel?
   public var uuid: Swift.Int?
   public var isMember: Swift.Bool?
@@ -751,7 +751,7 @@ public struct HHMemberInfoModel : hhVDoctorSDK.Mappable {
   public var productServiceId: Swift.Int?
   public var productStatusDescn: Swift.String?
   public init?(map: hhVDoctorSDK.Map)
-  mutating public func mapping(map: hhVDoctorSDK.Map)
+  public mutating func mapping(map: hhVDoctorSDK.Map)
 }
 open class HHValueObservable<T> {
   public typealias Observer = (T) -> Swift.Void
@@ -764,7 +764,7 @@ open class HHValueObservable<T> {
   public init(_ v: T)
   @objc deinit
 }
-public class LoginManager {
+@_hasMissingDesignatedInitializers public class LoginManager {
   public static let `default`: hhVDoctorSDK.LoginManager
   public var mUUID: Swift.Int?
   public func userName() -> Swift.String
@@ -775,7 +775,7 @@ public class LoginManager {
   public func getUserInfoRequest(success: ((Swift.String?) -> Swift.Void)? = nil, fail: ((Swift.String) -> Swift.Void)? = nil)
   @objc deinit
 }
-final public class Map {
+@_hasMissingDesignatedInitializers final public class Map {
   final public subscript(key: Swift.String) -> hhVDoctorSDK.Map {
     get
   }
@@ -871,7 +871,7 @@ extension PermissionType : Swift.CustomStringConvertible {
     get
   }
 }
-public class PhotoPicker {
+@_hasMissingDesignatedInitializers public class PhotoPicker {
   public static func openCamera(config: hhVDoctorSDK.HHCameraConfig, capFinished: hhVDoctorSDK.onCapFinished? = nil)
   public static func reduceImages(paths: [Swift.String], finished: @escaping (([Swift.String]) -> Swift.Void))
   public class func changeAvatar(vc: UIKit.UIViewController, reference: UIKit.UIView? = nil, uuid: Swift.Int, imgClosure: @escaping (UIKit.UIImage) -> Swift.Void, keyClosure: @escaping (Swift.String) -> Swift.Void)
@@ -881,7 +881,7 @@ extension PhotoPicker {
   public static func checkPermisstion(_ type: hhVDoctorSDK.PermissionType, authorized: (() -> Swift.Void)?, others: ((hhVDoctorSDK.PermissionType) -> Swift.Void)?)
   public static func converSize(_ size: CoreGraphics.CGSize) -> CoreGraphics.CGSize
 }
-public class PhotoPickerConfig {
+@_hasMissingDesignatedInitializers public class PhotoPickerConfig {
   public static let `default`: hhVDoctorSDK.PhotoPickerConfig
   public var miniPicTip: Swift.Bool
   public var mMaxSelectCount: Swift.Int
@@ -1052,7 +1052,7 @@ public struct hhToastStyle {
   public var shadowOffset: CoreGraphics.CGSize
   public var imageSize: CoreGraphics.CGSize
   public var activitySize: CoreGraphics.CGSize
-  public var fadeDuration: Foundation.TimeInterval
+  public var fadeDuration: Swift.Double
 }
 public func <- <Transform>(left: inout Transform.Object, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
 public func >>> <Transform>(left: Transform.Object, right: (hhVDoctorSDK.Map, Transform)) where Transform : hhVDoctorSDK.TransformType
@@ -1095,7 +1095,7 @@ public protocol TransformType {
   func transformFromJSON(_ value: Any?) -> Self.Object?
   func transformToJSON(_ value: Self.Object?) -> Self.JSON?
 }
-@objc public class TRTCManager : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class TRTCManager : ObjectiveC.NSObject {
   public static let `default`: hhVDoctorSDK.TRTCManager
   @objc deinit
 }
@@ -1138,21 +1138,21 @@ public protocol Updatable {
   mutating func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
 }
 extension Updatable {
-  mutating public func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+  public mutating func update(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, isLast: Swift.Bool = false, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
   @discardableResult
-  mutating public func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  public mutating func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
   @discardableResult
-  mutating public func finish() throws -> Swift.Array<Swift.UInt8>
-  mutating public func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
-  mutating public func finish(output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+  public mutating func finish() throws -> Swift.Array<Swift.UInt8>
+  public mutating func finish(withBytes bytes: Swift.ArraySlice<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+  public mutating func finish(output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
 }
 extension Updatable {
   @discardableResult
-  mutating public func update(withBytes bytes: Swift.Array<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
-  mutating public func update(withBytes bytes: Swift.Array<Swift.UInt8>, isLast: Swift.Bool = false, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+  public mutating func update(withBytes bytes: Swift.Array<Swift.UInt8>, isLast: Swift.Bool = false) throws -> Swift.Array<Swift.UInt8>
+  public mutating func update(withBytes bytes: Swift.Array<Swift.UInt8>, isLast: Swift.Bool = false, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
   @discardableResult
-  mutating public func finish(withBytes bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
-  mutating public func finish(withBytes bytes: Swift.Array<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
+  public mutating func finish(withBytes bytes: Swift.Array<Swift.UInt8>) throws -> Swift.Array<Swift.UInt8>
+  public mutating func finish(withBytes bytes: Swift.Array<Swift.UInt8>, output: (Swift.Array<Swift.UInt8>) -> Swift.Void) throws
 }
 public typealias onProgress = ((CoreGraphics.CGFloat, Swift.String) -> Swift.Void)
 public typealias onUploadOnce = ((Swift.Bool, hhVDoctorSDK.HHUploadModel) -> Swift.Void)
@@ -1178,7 +1178,7 @@ public class HHUploadModel {
   public init(clouldKey: Swift.String?, filePath: Swift.String?, uploadTime: Foundation.TimeInterval?, name: Swift.String?, smallImage: Swift.String)
   @objc deinit
 }
-public class UploadState {
+@_hasMissingDesignatedInitializers public class UploadState {
   public var file: Swift.String?
   public var isSelect: Swift.Bool
   public var changed: (() -> Swift.Void)?
@@ -1190,7 +1190,7 @@ public class UploadState {
   public func isFail() -> Swift.Bool
   @objc deinit
 }
-public class WeakArray<T> {
+@_hasMissingDesignatedInitializers public class WeakArray<T> {
   public func add(_ delegate: T)
   public func remove(_ delegate: T)
   public func excute(_ block: @escaping ((T?) -> Swift.Void))
@@ -1241,6 +1241,7 @@ extension hhVDoctorSDK.PermissionType : Swift.Hashable {}
 extension hhVDoctorSDK.PermissionType : Swift.RawRepresentable {}
 extension hhVDoctorSDK.Rabbit.Error : Swift.Equatable {}
 extension hhVDoctorSDK.Rabbit.Error : Swift.Hashable {}
+extension hhVDoctorSDK.Reachability.NetworkStatus : Swift.Equatable {}
 extension hhVDoctorSDK.Reachability.NetworkStatus : Swift.Hashable {}
 extension hhVDoctorSDK.hhToastPosition : Swift.Equatable {}
 extension hhVDoctorSDK.hhToastPosition : Swift.Hashable {}
