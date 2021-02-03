@@ -398,13 +398,12 @@ public class HHFileUploadManager {
   public func cancelAll(_ finished: (() -> Swift.Void)? = nil)
   @objc deinit
 }
-public protocol HHHUDable {
-  var autoDismissDuration: Foundation.TimeInterval { get }
-  func showHUD()
-  func dismissHUD()
-  func showSuccess(_ message: Swift.String?)
-  func showError(_ messgae: Swift.String?)
-  func setDismissDuration(_ duraion: Foundation.TimeInterval)
+@objc public protocol HHHUDable {
+  @objc func showHUD()
+  @objc func dismissHUD()
+  @objc func showSuccess(_ message: Swift.String?)
+  @objc func showError(_ messgae: Swift.String?)
+  @objc func setDismissDuration(_ duraion: Foundation.TimeInterval)
 }
 @_inheritsConvenienceInitializers @objc public class HHLocation : ObjectiveC.NSObject {
   @objc public static let `default`: hhVDoctorSDK.HHLocation

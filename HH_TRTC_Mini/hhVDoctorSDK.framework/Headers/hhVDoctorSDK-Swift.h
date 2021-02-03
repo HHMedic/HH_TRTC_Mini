@@ -354,6 +354,24 @@ SWIFT_CLASS("_TtC12hhVDoctorSDK18HHFileCacheManager")
 
 
 
+/// 加载进度协议
+SWIFT_PROTOCOL("_TtP12hhVDoctorSDK9HHHUDable_")
+@protocol HHHUDable
+/// 显示加载中
+- (void)showHUD;
+/// 隐藏菊花
+- (void)dismissHUD;
+/// 正确提示
+- (void)showSuccess:(NSString * _Nullable)message;
+/// 错误提示
+- (void)showError:(NSString * _Nullable)messgae;
+/// 自动 dismiss 时间
+/// \param duraion 持续时间
+///
+- (void)setDismissDuration:(NSTimeInterval)duraion;
+@end
+
+
 /// HH 定位
 SWIFT_CLASS("_TtC12hhVDoctorSDK10HHLocation")
 @interface HHLocation : NSObject
@@ -456,6 +474,17 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong, getter=defau
 
 
 @interface HHMSDK (SWIFT_EXTENSION(hhVDoctorSDK))
+/// 指定人发起呼叫(带 UI)
+/// <ul>
+///   <li>
+///     Parameters:
+///   </li>
+/// </ul>
+- (void)startMemberCallWithNeedSelectMember:(BOOL)needSelectMember;
+@end
+
+
+@interface HHMSDK (SWIFT_EXTENSION(hhVDoctorSDK))
 /// 获取病历详情
 /// \param userToken 当前人的唯一标志
 ///
@@ -479,17 +508,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong, getter=defau
 /// returns:
 /// url
 - (NSString * _Nonnull)getAllMedicsWithUserToken:(NSString * _Nonnull)userToken SWIFT_WARN_UNUSED_RESULT;
-@end
-
-
-@interface HHMSDK (SWIFT_EXTENSION(hhVDoctorSDK))
-/// 指定人发起呼叫(带 UI)
-/// <ul>
-///   <li>
-///     Parameters:
-///   </li>
-/// </ul>
-- (void)startMemberCallWithNeedSelectMember:(BOOL)needSelectMember;
 @end
 
 
